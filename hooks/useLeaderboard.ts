@@ -1,16 +1,55 @@
 'use client'
 import { useEffect, useState, useCallback } from 'react'
-export interface LeaderEntry { wallet_address:string; basename:string|null; profile_chip:number; total_served:number; onchain_chip:number; total_chip:number }
-export function formatAddress(addr:string){ return addr.slice(0,6)+'...'+addr.slice(-4) }
-export function formatName(e:LeaderEntry){ return e.basename || formatAddress(e.wallet_address) }
-export function useLeaderboard(interval=30000) {
-  const [leaders,setLeaders]=useState<LeaderEntry[]>([])
-  const [loading,setLoading]=useState(true)
-  const [lastUpdate,setLastUpdate]=useState<Date|null>(null)
-  const fetch_=useCallback(async()=>{
-    try{ const r=await fetch('/api/leaderboard'); setLeaders(await r.json()); setLastUpdate(new Date()) }
-    catch(e){ console.error(e) } finally{ setLoading(false) }
-  },[])
-  useEffect(()=>{ fetch_(); const t=setInterval(fetch_,interval); return ()=>clearInterval(t) },[fetch_,interval])
-  return { leaders, loading, lastUpdate, refetch:fetch_ }
+
+export interface LeaderEntry {
+  wallet_address: string
+  basename:       string | null
+  profile_chip:   number
+  total_served:   number
+  onchain_chip:   number
+  base_chip:      number
+  total_chip:     number
+  collection_complete: boolean
+  types_collected:     number
+  rank:           number
+}
+
+export function formatAddress(addr: string): string {
+  return `${addr.slice(0, 6)}...${addr.slice(-4)}`
+}
+
+export function formatName(entry: { basename: string | null; wallet_address: string }): string {
+  return entry.basename || formatAddress(entry.wallet_address)
+}
+
+export function useLeaderboard(currentAddress: string | undefined, interval = 30000) {
+  const [top50,     setTop50]     = useState<LeaderEntry[]>([])
+  const [you,       setYou]       = useState<LeaderEntry | null>(null)
+  const [loading,   setLoading]   = useState(true)
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null)
+
+  const fetch_ = useCallback(async () => {
+    try {
+      const url = currentAddress
+        ? `/api/leaderboard?wallet=${currentAddress}`
+        : '/api/leaderboard'
+      const res  = await fetch(url)
+      const data = await res.json()
+      setTop50(data.top50 || [])
+      setYou(data.you || null)
+      setLastUpdate(new Date())
+    } catch (err) {
+      console.error('Leaderboard fetch failed:', err)
+    } finally {
+      setLoading(false)
+    }
+  }, [currentAddress])
+
+  useEffect(() => {
+    fetch_()
+    const t = setInterval(fetch_, interval)
+    return () => clearInterval(t)
+  }, [fetch_, interval])
+
+  return { top50, you, loading, lastUpdate, refetch: fetch_ }
 }
