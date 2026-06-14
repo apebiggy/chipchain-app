@@ -48,7 +48,6 @@ const PHASES: Phase[] = [
     status: 'future',
     items: [
       { label: 'Redeploy all 4 contracts to Base Mainnet' },
-      { label: 'CDP Paymaster — sponsored gas for players' },
       { label: 'Treasury starts collecting real ETH fees' },
       { label: 'Testnet $CHIP balances + Wrap collections snapshotted' },
       { label: 'Target: 1,000-3,000 onchain transactions in first month' },
