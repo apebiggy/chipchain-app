@@ -44,6 +44,12 @@ export async function GET(req: NextRequest) {
     const addresses = players.map((p: { wallet_address: string }) => p.wallet_address as `0x${string}`)
     const amounts   = players.map(() => BigInt(CHIPS_PER_TICK))
 
+    // Fetch nonce explicitly using 'pending' to account for any tx still in the mempool
+    const nonce = await publicClient.getTransactionCount({
+      address: account.address,
+      blockTag: 'pending',
+    })
+
     const hash = await walletClient.writeContract({
       address: CONTRACTS.GAME_CONTRACT,
       abi: [
@@ -60,6 +66,7 @@ export async function GET(req: NextRequest) {
       ],
       functionName: 'batchCreditProfile',
       args: [addresses, amounts],
+      nonce,
     })
 
     await publicClient.waitForTransactionReceipt({ hash })
