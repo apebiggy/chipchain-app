@@ -140,7 +140,7 @@ export default function Home() {
     <div style={{ maxWidth:860, margin:'0 auto', padding:16, fontFamily:'Nunito,sans-serif', paddingBottom:20 }}>
 
       {/* Header banner — elaborate shop illustration */}
-      <style jsx global>{`
+      <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
 
         .cc-sky{
@@ -333,7 +333,7 @@ export default function Home() {
             </button>
           </div>
 
-          <style jsx global>{`
+          <style>{`
             @media (max-width: 520px) {
               .order-grid {
                 grid-template-columns: 1fr !important;

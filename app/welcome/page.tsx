@@ -81,7 +81,7 @@ const FAQ_TEASER = [
 export default function WelcomePage() {
   return (
     <div style={S.page}>
-      <style jsx global>{`
+      <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@500;600;700;900&family=Nunito:wght@400;700;800;900&display=swap');
 
         .cc-halftone {
