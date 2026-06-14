@@ -24,7 +24,7 @@ export function usePlayerProfile() {
     supabase.from('players')
       .upsert({ wallet_address: address, last_seen: new Date().toISOString() }, { onConflict: 'wallet_address', ignoreDuplicates: false })
       .select('served_today').single()
-      .then(({ data }) => { if (data) setServedToday(data.served_today ?? 0) })
+      .then(({ data }: { data: { served_today: number } | null }) => { if (data) setServedToday(data.served_today ?? 0) })
   }, [address, tick])
 
   function refetch() { refetchPd(); refetchChip(); setTick(t => t + 1) }
