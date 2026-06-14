@@ -5,7 +5,7 @@ import { privateKeyToAccount } from 'viem/accounts'
 import { baseSepolia } from 'viem/chains'
 import { CONTRACTS, GAME_ABI } from '@/lib/contracts'
 
-const CHIPS_PER_TICK = 10  // 10 CHIP per minute = 600/hour = 14,400/day
+const CHIPS_PER_TICK = 100  // 100 CHIP per 10-minute tick = same 14,400/day effective rate
 
 export async function GET(req: NextRequest) {
   // Verify cron secret

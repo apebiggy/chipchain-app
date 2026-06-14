@@ -26,7 +26,7 @@ const FAQS: QA[] = [
   },
   {
     q: '🤖 How does Auto Serve work?',
-    a: 'Pay a one-time fee (0.0016 ETH, ~$5) to activate Auto Serve. It earns 10 $CHIP per minute into your Profile balance automatically — even while you\'re not actively playing. Withdraw to onchain $CHIP anytime. Note: Auto Serve does not award Newspaper Wraps — only manual SERVE IT actions do, so keep playing manually to fill out your collection.',
+    a: 'Pay a one-time fee (0.003 ETH) to activate Auto Serve. It earns 10 $CHIP per minute into your Profile balance, credited in batches of 100 every 10 minutes — even while you\'re not actively playing. Withdraw to onchain $CHIP anytime. Note: Auto Serve does not award Newspaper Wraps — only manual SERVE IT actions do, so keep playing manually to fill out your collection.',
   },
   {
     q: '💰 What are the protocol fees for?',
