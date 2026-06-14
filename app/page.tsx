@@ -152,7 +152,7 @@ export default function Home() {
         .cc-flags-row{display:flex;justify-content:space-between;align-items:flex-end;padding:0 18px;position:relative;z-index:4}
         .cc-flag-unit{display:flex;flex-direction:column;align-items:center}
         .cc-flag-pole{width:3px;height:32px;background:#555;border-radius:2px 2px 0 0}
-        .cc-flag-cloth{font-size:24px;line-height:1;margin-bottom:2px}
+        .cc-flag-cloth{width:34px;height:22px;line-height:1;margin-bottom:2px;border:1px solid #111;box-shadow:1px 1px 0 rgba(0,0,0,0.3);transform:rotate(-2deg);display:block}
         .cc-logo-center{position:relative;z-index:5;display:flex;align-items:flex-end;justify-content:center;margin-bottom:-10px}
         .cc-shop-logo{width:110px;height:auto;filter:drop-shadow(3px 4px 0 rgba(0,0,0,0.35));animation:cc-logobob 3s ease-in-out infinite;position:relative;z-index:5}
         @keyframes cc-logobob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-6px) rotate(1deg)}}
@@ -200,14 +200,26 @@ export default function Home() {
         <div className="cc-sky">
           <div className="cc-flags-row">
             <div className="cc-flag-unit">
-              <div className="cc-flag-cloth">🇬🇧</div>
+              <svg className="cc-flag-cloth" viewBox="0 0 60 36" xmlns="http://www.w3.org/2000/svg">
+                <rect width="60" height="36" fill="#00247d"/>
+                <path d="M0,0 L60,36 M60,0 L0,36" stroke="#fff" strokeWidth="7"/>
+                <path d="M0,0 L60,36 M60,0 L0,36" stroke="#cf142b" strokeWidth="3"/>
+                <path d="M30,0 V36 M0,18 H60" stroke="#fff" strokeWidth="11"/>
+                <path d="M30,0 V36 M0,18 H60" stroke="#cf142b" strokeWidth="6"/>
+              </svg>
               <div className="cc-flag-pole" />
             </div>
             <div className="cc-logo-center">
               <img src="/branding/logo-full.png" className="cc-shop-logo" alt="Chip Chain logo" />
             </div>
             <div className="cc-flag-unit">
-              <div className="cc-flag-cloth">🇬🇧</div>
+              <svg className="cc-flag-cloth" viewBox="0 0 60 36" xmlns="http://www.w3.org/2000/svg">
+                <rect width="60" height="36" fill="#00247d"/>
+                <path d="M0,0 L60,36 M60,0 L0,36" stroke="#fff" strokeWidth="7"/>
+                <path d="M0,0 L60,36 M60,0 L0,36" stroke="#cf142b" strokeWidth="3"/>
+                <path d="M30,0 V36 M0,18 H60" stroke="#fff" strokeWidth="11"/>
+                <path d="M30,0 V36 M0,18 H60" stroke="#cf142b" strokeWidth="6"/>
+              </svg>
               <div className="cc-flag-pole" />
             </div>
           </div>
