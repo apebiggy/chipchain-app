@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(req: NextRequest) {
   const wallet = req.nextUrl.searchParams.get('wallet')
   if (!wallet) return NextResponse.json({ error: 'No wallet' }, { status: 400 })
