@@ -21,7 +21,7 @@ export function Leaderboard({ currentAddress }: Props) {
         }}
       >
         <span style={S.rank}>{medals[e.rank] || `#${e.rank}`}</span>
-        <span style={{ flex: 1, overflow: 'hidden' }}>
+        <span style={{ flex: 1, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', minWidth: 0 }}>
           {isBase ? (
             <span>
               <span style={S.baseName}>{name.replace('.base', '')}</span>
@@ -70,10 +70,10 @@ export function Leaderboard({ currentAddress }: Props) {
       </div>
 
       <div style={S.colHeaders}>
-        <span style={{ width: 32 }}>#</span>
+        <span style={{ width: 28 }}>#</span>
         <span style={{ flex: 1 }}>Player</span>
-        <span style={{ width: 80, textAlign: 'right' }}>Served</span>
-        <span style={{ width: 90, textAlign: 'right' }}>$CHIP</span>
+        <span style={{ width: 52, textAlign: 'right' }}>Served</span>
+        <span style={{ width: 72, textAlign: 'right' }}>$CHIP</span>
       </div>
 
       <div style={S.scroll}>
@@ -104,16 +104,16 @@ const S: Record<string, React.CSSProperties> = {
   container:  { background: '#fff', border: '3px solid #111', borderRadius: 12, overflow: 'hidden', display: 'flex', flexDirection: 'column' },
   header:     { background: '#1757a8', color: '#fff', padding: '10px 14px', fontFamily: 'serif', fontSize: 16, fontWeight: 900, display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   updated:    { fontSize: 10, color: 'rgba(255,255,255,.6)', fontWeight: 400 },
-  colHeaders: { display: 'flex', padding: '4px 12px', fontSize: 9, fontWeight: 900, color: '#aaa', letterSpacing: 1.5, textTransform: 'uppercase', borderBottom: '1.5px solid #eee', gap: 8 },
+  colHeaders: { display: 'flex', padding: '4px 8px', fontSize: 9, fontWeight: 900, color: '#aaa', letterSpacing: 1.5, textTransform: 'uppercase', borderBottom: '1.5px solid #eee', gap: 6 },
   scroll:     { overflowY: 'auto', maxHeight: 420 },
-  row:        { display: 'flex', alignItems: 'center', padding: '7px 12px', gap: 8, borderBottom: '1px solid #f0f0f0', fontSize: 13 },
-  rank:       { width: 32, fontWeight: 900, fontSize: 13, color: '#888', flexShrink: 0 },
+  row:        { display: 'flex', alignItems: 'center', padding: '7px 8px', gap: 6, borderBottom: '1px solid #f0f0f0', fontSize: 13 },
+  rank:       { width: 28, fontWeight: 900, fontSize: 13, color: '#888', flexShrink: 0 },
   baseName:   { fontWeight: 900, color: '#111' },
   baseSuffix: { color: '#0052ff', fontWeight: 900 },
-  address:    { fontFamily: 'monospace', fontSize: 11, color: '#888' },
+  address:    { fontFamily: 'monospace', fontSize: 10.5, color: '#888', whiteSpace: 'nowrap' },
   youBadge:   { marginLeft: 6, background: '#0052ff', color: '#fff', fontSize: 8, fontWeight: 900, padding: '1px 5px', borderRadius: 3 },
-  served:     { width: 80, textAlign: 'right', color: '#888', fontSize: 12, fontWeight: 700, flexShrink: 0 },
-  chip:       { width: 90, textAlign: 'right', color: '#e67e22', fontWeight: 900, fontSize: 13, flexShrink: 0 },
+  served:     { width: 52, textAlign: 'right', color: '#888', fontSize: 12, fontWeight: 700, flexShrink: 0 },
+  chip:       { width: 72, textAlign: 'right', color: '#e67e22', fontWeight: 900, fontSize: 13, flexShrink: 0 },
   multiplierBadge: {
     marginLeft: 4, background: '#FFD700', color: '#111', fontSize: 9, fontWeight: 900,
     padding: '1px 4px', borderRadius: 3, border: '1px solid #cc1111',
