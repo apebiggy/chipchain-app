@@ -65,14 +65,14 @@ export function useAutoServe() {
       setWithdrawHash(hash)
       setWithdrawStatus('pending')
 
-      // Clear profile balance in Supabase
+      // Clear profile balance in Supabase (and record withdrawal for leaderboard sync)
       await fetch('/api/profile', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'x-wallet-address': address ?? '',
         },
-        body: JSON.stringify({ action: 'clear_profile_chip' }),
+        body: JSON.stringify({ action: 'clear_profile_chip', txHash: hash }),
       })
 
       setWithdrawStatus('confirmed')

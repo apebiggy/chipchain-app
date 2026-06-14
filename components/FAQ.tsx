@@ -14,7 +14,7 @@ const FAQS: QA[] = [
   },
   {
     q: '📰 What are Newspaper Wraps?',
-    a: 'Every SERVE IT mints a collectible Newspaper Wrap NFT with a random tabloid headline, plus a 10% chance of being a ⭐ Rare edition. There are 20 possible wrap types in total (10 headlines × normal/rare).',
+    a: 'Every time you press SERVE IT manually, you mint a collectible Newspaper Wrap NFT with a random tabloid headline, plus a 10% chance of being a ⭐ Rare edition. There are 20 possible wrap types in total (10 headlines × normal/rare). Note: Auto Serve earns $CHIP but does not award Newspaper Wraps — you\'ll need to serve manually to grow your collection.',
   },
   {
     q: '🏆 How do $CHIP and Newspaper Wraps affect rewards?',
@@ -26,7 +26,7 @@ const FAQS: QA[] = [
   },
   {
     q: '🤖 How does Auto Serve work?',
-    a: 'Pay a one-time fee (0.0016 ETH, ~$5) to activate Auto Serve. It earns 10 $CHIP per minute into your Profile balance automatically — even while you\'re not actively playing. Withdraw to onchain $CHIP anytime.',
+    a: 'Pay a one-time fee (0.0016 ETH, ~$5) to activate Auto Serve. It earns 10 $CHIP per minute into your Profile balance automatically — even while you\'re not actively playing. Withdraw to onchain $CHIP anytime. Note: Auto Serve does not award Newspaper Wraps — only manual SERVE IT actions do, so keep playing manually to fill out your collection.',
   },
   {
     q: '💰 What are the protocol fees for?',

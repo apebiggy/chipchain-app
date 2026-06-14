@@ -213,7 +213,7 @@ export default function Home() {
               ⛓ <span><b>Manual serve</b> — tokens go onchain to your wallet every SERVE IT</span>
             </div>
             <div style={{ flex:1, background:'#e8f0ff', border:'2px solid #0052ff', borderRadius:8, padding:'7px 10px', fontSize:11, fontWeight:800, color:'#003cbf', minHeight:44, display:'flex', alignItems:'center', gap:6 }}>
-              🤖 <span><b>Auto Serve</b> — earns 10 $CHIP/min into your profile. Withdraw anytime.</span>
+              🤖 <span><b>Auto Serve</b> — earns 10 $CHIP/min into your profile (no Newspaper Wraps). Withdraw anytime.</span>
             </div>
           </div>
 
@@ -418,6 +418,9 @@ export default function Home() {
                   {profile.hasAutoServe
                     ? 'Earning 10 $CHIP every minute into your profile balance'
                     : 'Hire for $5 (one-time) to earn 10 $CHIP/min passively'}
+                </div>
+                <div style={{ fontSize: 11, color: '#c77', marginTop: 4, fontStyle: 'italic' }}>
+                  📰 Note: Auto Serve does not award Newspaper Wraps — serve manually to grow your collection.
                 </div>
               </div>
             </div>
