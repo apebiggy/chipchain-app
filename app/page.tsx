@@ -274,7 +274,7 @@ export default function Home() {
                     </div>
                     {/* Order items */}
                     <div style={{ fontSize:9, fontWeight:900, color:'#aaa', letterSpacing:2, marginBottom:5 }}>THEY WANT:</div>
-                    {[...new Set(customer.o)].map(id => {
+                    {Array.from(new Set(customer.o)).map(id => {
                       const m = MENU.find(x=>x.id===id)!
                       const cnt  = customer.o.filter(x=>x===id).length
                       const have = tray.filter(x=>x===id).length
