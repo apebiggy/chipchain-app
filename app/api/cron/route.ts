@@ -26,9 +26,8 @@ export async function GET(req: NextRequest) {
     }
 
     // Set up backend wallet
-    const account = privateKeyToAccount(
-      `0x${process.env.BACKEND_PRIVATE_KEY}` as `0x${string}`
-    )
+    const rawKey = (process.env.BACKEND_PRIVATE_KEY || '').trim().replace(/^0x/i, '')
+    const account = privateKeyToAccount(`0x${rawKey}` as `0x${string}`)
 
     const walletClient = createWalletClient({
       account,
