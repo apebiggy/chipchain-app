@@ -139,6 +139,105 @@ export default function Home() {
   return (
     <div style={{ maxWidth:860, margin:'0 auto', padding:16, fontFamily:'Nunito,sans-serif', paddingBottom:20 }}>
 
+      {/* Header banner — elaborate shop illustration */}
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
+        .cc-sky{
+          background:#1a90d8;
+          background-image:radial-gradient(circle,rgba(255,255,255,0.18) 1.5px,transparent 1.5px);
+          background-size:10px 10px;
+          padding:10px 10px 0;
+        }
+        .cc-flags-row{display:flex;justify-content:space-between;align-items:flex-end;padding:0 18px;position:relative;z-index:4}
+        .cc-flag-unit{display:flex;flex-direction:column;align-items:center}
+        .cc-flag-pole{width:3px;height:32px;background:#555;border-radius:2px 2px 0 0}
+        .cc-flag-cloth{font-size:24px;line-height:1;margin-bottom:2px}
+        .cc-logo-center{position:relative;z-index:5;display:flex;align-items:flex-end;justify-content:center;margin-bottom:-10px}
+        .cc-shop-logo{width:110px;height:auto;filter:drop-shadow(3px 4px 0 rgba(0,0,0,0.35));animation:cc-logobob 3s ease-in-out infinite;position:relative;z-index:5}
+        @keyframes cc-logobob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-6px) rotate(1deg)}}
+
+        .cc-sign-box{background:#FFD700;border:4px solid #111;border-bottom:0;border-radius:6px 6px 0 0;padding:8px 16px 6px;text-align:center}
+        .cc-sign-main{font-family:'Bangers',cursive;font-size:40px;color:#cc1111;-webkit-text-stroke:2px #111;letter-spacing:3px;line-height:1;text-shadow:3px 3px 0 #111}
+        .cc-sign-sub{font-size:10px;color:#8a5f00;font-weight:900;letter-spacing:3px;text-transform:uppercase;margin-top:3px}
+
+        .cc-awning{height:28px;border-left:4px solid #111;border-right:4px solid #111;background:repeating-linear-gradient(90deg,#1757a8 0,#1757a8 24px,#fff 24px,#fff 48px);position:relative;overflow:visible}
+        .cc-awning::after{content:'';position:absolute;bottom:-11px;left:-4px;right:-4px;height:11px;
+          background:
+            radial-gradient(circle at 50% 0%,transparent 10px,#1757a8 10px) -10px 0/20px 100%,
+            radial-gradient(circle at 50% 0%,transparent 10px,#fff 10px) 0 0/20px 100%;
+          border-left:4px solid #111;border-right:4px solid #111;z-index:3}
+
+        .cc-window-row{background:#FFE840;border:4px solid #111;border-top:none;display:grid;grid-template-columns:38px 1fr 38px;grid-template-rows:auto auto;align-items:center;gap:6px 8px;padding:10px 12px;margin-top:11px}
+        .cc-w-staff{font-size:28px;animation:cc-bob 2.2s ease-in-out infinite;text-align:center;grid-row:1/3}
+        .cc-w-staff2{font-size:28px;animation:cc-bob 2.6s ease-in-out infinite .5s;text-align:center;grid-row:1/3}
+        @keyframes cc-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+        .cc-w-middle{grid-column:2;display:flex;flex-direction:column;align-items:center;gap:6px}
+        .cc-w-chips{font-size:20px;animation:cc-bob 1.8s ease-in-out infinite .2s}
+
+        .cc-w-badge-hot{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;background:linear-gradient(135deg,#ff4500,#ff8c00);color:#fff;font-family:'Bangers',cursive;font-size:14px;letter-spacing:1.5px;padding:5px 12px;border:2.5px solid #111;border-radius:5px;box-shadow:2.5px 2.5px 0 #111}
+        .cc-w-badge-base{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;background:#fff;color:#0052ff;font-size:11px;font-weight:900;letter-spacing:.4px;padding:5px 10px;border:2px solid #0052ff;border-radius:7px;box-shadow:2.5px 2.5px 0 #0052ff}
+        .cc-base-logo{width:17px;height:17px;flex-shrink:0}
+        .cc-base-label{display:flex;flex-direction:column;line-height:1.05;text-align:left}
+        .cc-base-label span:first-child{font-size:8.5px;color:#999;letter-spacing:1px;text-transform:uppercase;font-weight:800}
+        .cc-base-label span:last-child{font-size:11px;color:#0052ff;font-family:'Bangers',cursive;letter-spacing:1px}
+
+        .cc-bricks{height:18px;background:#c0392b;border:4px solid #111;border-top:0;
+          background-image:
+            repeating-linear-gradient(0deg,transparent,transparent 8px,rgba(0,0,0,0.2) 8px,rgba(0,0,0,0.2) 9px),
+            repeating-linear-gradient(90deg,transparent,transparent 32px,rgba(0,0,0,0.2) 32px,rgba(0,0,0,0.2) 34px)}
+        .cc-pavement{height:13px;background:#d4c9a8;border:4px solid #111;border-top:2px dashed #bbb}
+
+        @media (max-width:480px){
+          .cc-sign-main{font-size:30px}
+          .cc-shop-logo{width:85px}
+          .cc-w-badge-hot{font-size:11px;padding:4px 8px}
+          .cc-base-label span:last-child{font-size:9px}
+        }
+      `}</style>
+
+      <div style={{ borderRadius: 12, overflow: 'hidden', marginBottom: 14 }}>
+        <div className="cc-sky">
+          <div className="cc-flags-row">
+            <div className="cc-flag-unit">
+              <div className="cc-flag-cloth">🇬🇧</div>
+              <div className="cc-flag-pole" />
+            </div>
+            <div className="cc-logo-center">
+              <img src="/branding/logo-full.png" className="cc-shop-logo" alt="Chip Chain logo" />
+            </div>
+            <div className="cc-flag-unit">
+              <div className="cc-flag-cloth">🇬🇧</div>
+              <div className="cc-flag-pole" />
+            </div>
+          </div>
+          <div className="cc-sign-box">
+            <div className="cc-sign-main">CHIP CHAIN</div>
+            <div className="cc-sign-sub">🍟 The Great British Fry-Off · Live on Base</div>
+          </div>
+        </div>
+        <div className="cc-awning" />
+        <div className="cc-window-row">
+          <div className="cc-w-staff">👩‍🍳</div>
+          <div className="cc-w-middle">
+            <div className="cc-w-badge-hot">🔥 HOT &amp; FRESH</div>
+            <div className="cc-w-chips">🍟🍟🍟</div>
+            <div className="cc-w-badge-base">
+              <svg className="cc-base-logo" viewBox="0 0 111 111" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="55.5" cy="55.5" r="55.5" fill="#0052FF"/>
+                <path fillRule="evenodd" clipRule="evenodd" d="M55.5 103C81.7 103 103 81.7 103 55.5S81.7 8 55.5 8 8 29.3 8 55.5s21.3 47.5 47.5 47.5zm0-8c-21.8 0-39.5-17.7-39.5-39.5S33.7 16 55.5 16s39.5 17.7 39.5 39.5S77.3 95 55.5 95z" fill="white"/>
+                <path d="M55.49 36.5c10.49 0 19.33 7.1 21.76 16.75H90.5C87.84 37.94 73.1 27 55.49 27 38.49 27 24 40.7 24 55.5S38.49 84 55.49 84c17.61 0 32.35-10.94 35.01-26.25H77.25C74.82 67.4 65.98 74.5 55.49 74.5c-10.49 0-19-8.5-19-19s8.51-19 19-19z" fill="white"/>
+              </svg>
+              <div className="cc-base-label"><span>Built on</span><span>BASE SEPOLIA</span></div>
+            </div>
+          </div>
+          <div className="cc-w-staff2">👨‍🍳</div>
+        </div>
+        <div className="cc-bricks" />
+        <div className="cc-pavement" />
+      </div>
+
+
       {/* Header */}
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14, flexWrap:'wrap', gap:8 }}>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
@@ -213,7 +312,7 @@ export default function Home() {
               ⛓ <span><b>Manual serve</b> — tokens go onchain to your wallet every SERVE IT</span>
             </div>
             <div style={{ flex:1, background:'#e8f0ff', border:'2px solid #0052ff', borderRadius:8, padding:'7px 10px', fontSize:11, fontWeight:800, color:'#003cbf', minHeight:44, display:'flex', alignItems:'center', gap:6 }}>
-              🤖 <span><b>Auto Serve</b> — earns 10 $CHIP/min into your profile (no Newspaper Wraps). Withdraw anytime.</span>
+              🤖 <span><b>Auto Serve</b> — earns 100 $CHIP every 10 min into your profile (no Newspaper Wraps). Withdraw anytime.</span>
             </div>
           </div>
 
@@ -424,8 +523,8 @@ export default function Home() {
                 </div>
                 <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>
                   {profile.hasAutoServe
-                    ? 'Earning 10 $CHIP every minute into your profile balance'
-                    : 'Hire for 0.003 ETH (one-time) to earn 10 $CHIP/min passively'}
+                    ? 'Earning 100 $CHIP every 10 minutes into your profile balance'
+                    : 'Hire for 0.003 ETH (one-time) to earn 100 $CHIP every 10 min passively'}
                 </div>
                 <div style={{ fontSize: 11, color: '#c77', marginTop: 4, fontStyle: 'italic' }}>
                   📰 Note: Auto Serve does not award Newspaper Wraps — serve manually to grow your collection.

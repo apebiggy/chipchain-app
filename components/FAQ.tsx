@@ -10,7 +10,7 @@ const FAQS: QA[] = [
   },
   {
     q: '⛓ Onchain $CHIP vs Profile $CHIP — what\'s the difference?',
-    a: 'Onchain $CHIP is minted directly to your wallet every time you press SERVE IT — permanent and visible on Basescan. Profile $CHIP accumulates from Auto Serve (10/min) and sits in your account until you withdraw it onchain (small fee applies).',
+    a: 'Onchain $CHIP is minted directly to your wallet every time you press SERVE IT — permanent and visible on Basescan. Profile $CHIP accumulates from Auto Serve (100 every 10 min) and sits in your account until you withdraw it onchain (small fee applies).',
   },
   {
     q: '📰 What are Newspaper Wraps?',
@@ -26,7 +26,7 @@ const FAQS: QA[] = [
   },
   {
     q: '🤖 How does Auto Serve work?',
-    a: 'Pay a one-time fee (0.003 ETH) to activate Auto Serve. It earns 10 $CHIP per minute into your Profile balance, credited in batches of 100 every 10 minutes — even while you\'re not actively playing. Withdraw to onchain $CHIP anytime. Note: Auto Serve does not award Newspaper Wraps — only manual SERVE IT actions do, so keep playing manually to fill out your collection.',
+    a: 'Pay a one-time fee (0.003 ETH) to activate Auto Serve. It earns 100 $CHIP every 10 minutes into your Profile balance — even while you\'re not actively playing. Withdraw to onchain $CHIP anytime. Note: Auto Serve does not award Newspaper Wraps — only manual SERVE IT actions do, so keep playing manually to fill out your collection.',
   },
   {
     q: '💰 What are the protocol fees for?',
