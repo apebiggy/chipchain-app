@@ -225,7 +225,7 @@ export default function Home() {
             <button onClick={() => profile.hasAutoServe ? setLastMsg('Auto-serve active! Check Profile tab.') : buyAutoServe()}
               disabled={buyStatus==='signing'||buyStatus==='pending'}
               style={{ flex:1, minHeight:48, background:profile.hasAutoServe?'#27ae60':'#fff', color:profile.hasAutoServe?'#fff':'#111', border:'3px solid #111', borderRadius:8, fontWeight:900, fontSize:13, cursor:'pointer', boxShadow:'3px 3px 0 #111' }}>
-              {buyStatus==='signing'?'⏳ Signing...':buyStatus==='pending'?'⏳ Confirming...':profile.hasAutoServe?'🤖 Auto ON · +10/min':'🤖 Hire ($5) · 10/min'}
+              {buyStatus==='signing'?'⏳ Signing...':buyStatus==='pending'?'⏳ Confirming...':profile.hasAutoServe?'🤖 Autoserve ON':'🤖 Autoserve'}
             </button>
             <button onClick={() => withdrawProfile()}
               disabled={profile.profileChip===0||withdrawStatus==='signing'||withdrawStatus==='pending'}
@@ -234,8 +234,16 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Two columns */}
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+          <style jsx global>{`
+            @media (max-width: 520px) {
+              .order-grid {
+                grid-template-columns: 1fr !important;
+              }
+            }
+          `}</style>
+
+          {/* Two columns (stacks to one on mobile) */}
+          <div className="order-grid" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
 
             {/* LEFT: Order */}
             <div style={{ background:'#fff', border:'3px solid #111', borderRadius:10, overflow:'hidden' }}>
@@ -417,7 +425,7 @@ export default function Home() {
                 <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>
                   {profile.hasAutoServe
                     ? 'Earning 10 $CHIP every minute into your profile balance'
-                    : 'Hire for $5 (one-time) to earn 10 $CHIP/min passively'}
+                    : 'Hire for 0.003 ETH (one-time) to earn 10 $CHIP/min passively'}
                 </div>
                 <div style={{ fontSize: 11, color: '#c77', marginTop: 4, fontStyle: 'italic' }}>
                   📰 Note: Auto Serve does not award Newspaper Wraps — serve manually to grow your collection.
