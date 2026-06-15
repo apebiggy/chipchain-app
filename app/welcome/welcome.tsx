@@ -36,7 +36,7 @@ const FEATURES = [
   {
     emoji: '⭐',
     title: 'Collect Them All → 2x',
-    text: 'Complete your 20/20 Wrap collection to unlock a 2x multiplier on your total $CHIP for leaderboard ranking and future rewards.',
+    text: 'Complete your 20/20 Wrap collection to permanently double the $CHIP minted from every future SERVE IT — applied automatically, onchain.',
   },
   {
     emoji: '🤖',
@@ -46,7 +46,7 @@ const FEATURES = [
   {
     emoji: '🏆',
     title: 'Live Top-50 Leaderboard',
-    text: 'Ranked by total $CHIP (onchain + profile, with the 2x bonus applied). Updates every 30 seconds — see exactly where you stand.',
+    text: 'Ranked by total $CHIP (onchain + profile). Updates every 30 seconds — see exactly where you stand.',
   },
 ]
 

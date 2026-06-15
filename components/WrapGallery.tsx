@@ -57,7 +57,7 @@ export function WrapGallery({ address }: Props) {
             </div>
             <div style={S.modalMultiplier}>2x $CHIP multiplier unlocked</div>
             <div style={S.modalNote}>
-              Applied to your leaderboard ranking and the upcoming rewards round
+              Every manual SERVE IT from now on mints double $CHIP — onchain, permanently
             </div>
             <button style={S.modalButton} onClick={() => setShowCelebration(false)}>
               Nice! 🍟
@@ -84,7 +84,7 @@ export function WrapGallery({ address }: Props) {
           ) : (
             <>
               <div style={S.multiplierText}>
-                Collect all <b>{totalPossible}</b> wraps to unlock a <b>2x $CHIP multiplier</b> for the upcoming rewards round
+                Collect all <b>{totalPossible}</b> wraps to permanently double your $CHIP from every future SERVE IT
               </div>
               <div style={S.progressTrack}>
                 <div style={{ ...S.progressFill, width: `${(uniqueOwned / totalPossible) * 100}%` }} />

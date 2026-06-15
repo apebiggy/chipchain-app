@@ -22,7 +22,7 @@ const FAQS: QA[] = [
   },
   {
     q: '⭐ What happens if I collect all 20 Newspaper Wraps?',
-    a: 'Completing the full collection (all 10 headlines in both normal and rare editions) unlocks a 2x multiplier on your total $CHIP for leaderboard ranking and the upcoming rewards calculation. Check the "Collection" progress bar on your Profile tab.',
+    a: 'Completing the full collection (all 10 headlines in both normal and rare editions) permanently doubles the $CHIP you earn from every manual SERVE IT going forward — minted directly onchain. A 🏆 2x badge appears next to your order once active. Past earnings aren\'t affected — only future serves. Check the "Collection" progress bar on your Profile tab.',
   },
   {
     q: '🤖 How does Auto Serve work?',

@@ -47,7 +47,6 @@ function LeaderRow({ entry, isYou, isPinned = false }: { entry: LeaderEntry; isY
       <span style={S.served}>{entry.total_served.toLocaleString()}</span>
       <span style={S.chip}>
         {entry.total_chip.toLocaleString()}
-        {entry.collection_complete && <span style={S.multiplierBadge}>2x</span>}
       </span>
     </div>
   )
@@ -130,10 +129,6 @@ const S: Record<string, React.CSSProperties> = {
   youBadge:   { marginLeft: 6, background: '#0052ff', color: '#fff', fontSize: 8, fontWeight: 900, padding: '1px 5px', borderRadius: 3 },
   served:     { width: 52, textAlign: 'right', color: '#888', fontSize: 12, fontWeight: 700, flexShrink: 0 },
   chip:       { width: 72, textAlign: 'right', color: '#e67e22', fontWeight: 900, fontSize: 13, flexShrink: 0 },
-  multiplierBadge: {
-    marginLeft: 4, background: '#FFD700', color: '#111', fontSize: 9, fontWeight: 900,
-    padding: '1px 4px', borderRadius: 3, border: '1px solid #cc1111',
-  },
   empty:      { padding: 32, textAlign: 'center', color: '#aaa', fontWeight: 700, fontSize: 13 },
   footer:     { padding: '8px 12px', fontSize: 10, color: '#bbb', borderTop: '1px solid #f0f0f0', textAlign: 'center' },
 }
