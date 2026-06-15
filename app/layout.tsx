@@ -3,11 +3,28 @@ import { Providers } from './providers'
 import './globals.css'
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_URL || 'https://v0-chipchain.vercel.app'),
   title: 'Chip Chain — The Great British Fry-Off',
-  description: 'Serve fish & chips. Earn $CHIP onchain. Live on Base.',
+  description: 'Serve fish & chips, earn $CHIP onchain, and collect Newspaper Wrap NFTs in this British chippy game built on Base.',
+  keywords: ['Chip Chain', 'Base', 'onchain game', 'fish and chips', 'crypto game', 'NFT', '$CHIP', 'Base Sepolia', 'web3 game'],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
   openGraph: {
-    title: 'Chip Chain',
-    description: 'The Great British Fry-Off — onchain on Base',
+    title: 'Chip Chain — The Great British Fry-Off',
+    description: 'Serve fish & chips, earn $CHIP onchain, and collect Newspaper Wrap NFTs in this British chippy game built on Base.',
+    images: ['/og-image.png'],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Chip Chain — The Great British Fry-Off',
+    description: 'Serve fish & chips, earn $CHIP onchain, and collect Newspaper Wrap NFTs in this British chippy game built on Base.',
     images: ['/og-image.png'],
   },
   other: {
