@@ -3,9 +3,22 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { createWalletClient, createPublicClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { baseSepolia } from 'viem/chains'
-import { CONTRACTS, GAME_ABI } from '@/lib/contracts'
+import { CONTRACTS } from '@/lib/contracts'
 
 const CHIPS_PER_TICK = 100  // 100 CHIP per 10-minute tick = same 14,400/day effective rate
+
+const BATCH_CREDIT_ABI = [
+  {
+    name: 'batchCreditProfile',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'players', type: 'address[]' },
+      { name: 'amounts', type: 'uint256[]' },
+    ],
+    outputs: [],
+  },
+] as const
 
 export async function GET(req: NextRequest) {
   // Verify cron secret
@@ -44,30 +57,43 @@ export async function GET(req: NextRequest) {
     const addresses = players.map((p: { wallet_address: string }) => p.wallet_address as `0x${string}`)
     const amounts   = players.map(() => BigInt(CHIPS_PER_TICK))
 
-    // Fetch nonce explicitly using 'pending' to account for any tx still in the mempool
-    const nonce = await publicClient.getTransactionCount({
-      address: account.address,
-      blockTag: 'pending',
-    })
+    // Send with retry: refetch nonce on "nonce too low" (handles lagging/inconsistent RPC nodes)
+    const MAX_ATTEMPTS = 4
+    let hash: `0x${string}` | undefined
+    let lastErr: unknown
 
-    const hash = await walletClient.writeContract({
-      address: CONTRACTS.GAME_CONTRACT,
-      abi: [
-        {
-          name: 'batchCreditProfile',
-          type: 'function',
-          stateMutability: 'nonpayable',
-          inputs: [
-            { name: 'players', type: 'address[]' },
-            { name: 'amounts', type: 'uint256[]' },
-          ],
-          outputs: [],
-        },
-      ],
-      functionName: 'batchCreditProfile',
-      args: [addresses, amounts],
-      nonce,
-    })
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      // Take the higher of 'pending' and 'latest' nonce, in case one RPC node is lagging
+      const [pendingNonce, latestNonce] = await Promise.all([
+        publicClient.getTransactionCount({ address: account.address, blockTag: 'pending' }),
+        publicClient.getTransactionCount({ address: account.address, blockTag: 'latest' }),
+      ])
+      const nonce = Math.max(pendingNonce, latestNonce)
+
+      try {
+        hash = await walletClient.writeContract({
+          address: CONTRACTS.GAME_CONTRACT,
+          abi: BATCH_CREDIT_ABI,
+          functionName: 'batchCreditProfile',
+          args: [addresses, amounts],
+          nonce,
+        })
+        break // success
+      } catch (err) {
+        lastErr = err
+        const msg = String(err)
+        if (msg.includes('nonce too low') && attempt < MAX_ATTEMPTS) {
+          console.warn(`Cron attempt ${attempt} hit nonce-too-low (tried nonce ${nonce}), retrying...`)
+          await new Promise((r) => setTimeout(r, 1500 * attempt))
+          continue
+        }
+        throw err
+      }
+    }
+
+    if (!hash) {
+      throw lastErr ?? new Error('Failed to send batchCreditProfile after retries')
+    }
 
     await publicClient.waitForTransactionReceipt({ hash })
 
