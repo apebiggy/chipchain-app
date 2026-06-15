@@ -13,7 +13,7 @@ Built for the Base ecosystem as a mini app.
 3. **SERVE IT** — fires a real Base transaction:
    - Mints **$CHIP** points directly to your wallet
    - Mints a collectible **Newspaper Wrap NFT** with a random tabloid headline (+10% chance of a ⭐ Rare edition)
-4. **Auto Serve** — pay a one-time fee (0.0016 ETH, ~$5) to earn **10 $CHIP/minute** passively into a profile balance, withdraw onchain anytime
+4. **Auto Serve** — pay a one-time fee (0.003 ETH) to earn **100 $CHIP every 10 minutes** passively into a profile balance, withdraw onchain anytime
 
 ---
 
@@ -27,9 +27,15 @@ There are **20 wrap types** in total (10 headlines × normal/rare editions). You
 
 ## 🏆 Leaderboard & Rewards
 
-The Top 50 leaderboard tracks total $CHIP (onchain + profile balance), with the 2x multiplier applied for completionists. Your own rank is always shown — even if you're outside the top 50, your row is pinned at the bottom.
+The Top 50 leaderboard tracks total $CHIP (onchain + profile balance), with the 2x multiplier applied for completionists. Your own rank is always shown — even if you're outside the top 50, your row is pinned at the bottom. Players with a registered [Basename](https://base.org/names) (`.base` / `.base.eth`) have it displayed in place of their wallet address, resolved live via OnchainKit.
 
 **Both your $CHIP balance and Newspaper Wrap collection are being tracked now** to determine standings ahead of the upcoming rewards round and the $CHIP token event (TGE).
+
+---
+
+## 🌐 Landing page & Base App
+
+A marketing landing page lives at `/welcome` (pop-art British chippy theme, real game mechanics, links into the live game at `/`). The app is registered on [Base.dev](https://base.dev) with a Builder Code (`bc_h20d7bcz`) for onchain attribution — Base App traffic is automatically tagged.
 
 ---
 
@@ -54,7 +60,7 @@ Every transaction sends a small protocol fee to an onchain **Treasury** contract
 |---|---|---|
 | SERVE IT (manual) | 0.000004 ETH | Treasury |
 | Withdraw profile $CHIP | 0.000004 ETH | Treasury |
-| Buy Auto Serve | 0.0016 ETH (~$5, one-time) | Treasury |
+| Buy Auto Serve | 0.003 ETH (one-time) | Treasury |
 
 All treasury withdrawals are logged onchain with a reason, fully transparent.
 
@@ -81,7 +87,7 @@ Targets are intentionally modest — built incrementally based on real player fe
 - **Onchain**: wagmi, viem, Base Sepolia
 - **Wallet**: Coinbase Wallet (OnchainKit) + MetaMask
 - **Backend**: Supabase (Postgres) — players, serves, wraps, leaderboard
-- **Auto Serve cron**: external cron service hitting `/api/cron` every minute
+- **Auto Serve cron**: external cron service hitting `/api/cron` every 10 minutes
 
 ---
 
@@ -115,7 +121,7 @@ ChippyChain (game logic)
    ├── claimServe()      → mints $CHIP + NewspaperWrap NFT, fee → Treasury
    ├── buyAutoServe()     → one-time subscription, fee → Treasury
    ├── withdrawProfile()  → moves profile balance to onchain $CHIP, fee → Treasury
-   ├── creditProfile()    → backend-only, credits auto-serve earnings (10/min)
+   ├── creditProfile()    → backend-only, credits auto-serve earnings (100 every 10 min)
    └── getPlayerData()    → returns full player stats in one call
 
 ChipToken ($CHIP)
@@ -138,15 +144,22 @@ chipchain-app/
 ├── app/
 │   ├── page.tsx              # Main game UI (Play / Top 50 / Profile tabs)
 │   ├── layout.tsx
+│   ├── icon.png               # Favicon
+│   ├── apple-icon.png         # Apple touch icon
+│   ├── robots.ts              # robots.txt generation
+│   ├── sitemap.ts             # sitemap.xml generation
 │   ├── providers.tsx         # wagmi + OnchainKit providers
+│   ├── welcome/
+│   │   ├── page.tsx           # Marketing landing page
+│   │   └── layout.tsx         # OG/Twitter metadata for /welcome
 │   └── api/
 │       ├── serve/route.ts        # Records serves + wrap mints
 │       ├── profile/route.ts      # Player profile read/update
 │       ├── leaderboard/route.ts  # Top 50 + your rank
 │       ├── wraps/route.ts        # Collection counts
-│       └── cron/route.ts         # Auto Serve credit (10/min)
+│       └── cron/route.ts         # Auto Serve credit (100 every 10 min)
 ├── components/
-│   ├── Leaderboard.tsx
+│   ├── Leaderboard.tsx       # Top 50, resolves Basenames via OnchainKit
 │   ├── WrapGallery.tsx       # 20-card collection grid + multiplier progress
 │   ├── FAQ.tsx
 │   └── Roadmap.tsx
@@ -156,6 +169,8 @@ chipchain-app/
 │   ├── useAutoServe.ts
 │   ├── useLeaderboard.ts
 │   └── useWraps.ts
+├── public/
+│   └── branding/              # Logos, shop background, OG images
 └── lib/
     ├── contracts.ts          # ABIs, addresses, headlines
     ├── wagmi.ts
