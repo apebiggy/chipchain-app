@@ -161,38 +161,11 @@ export default function Home() {
         .cc-sign-main{font-family:'Bangers',cursive;font-size:40px;color:#cc1111;-webkit-text-stroke:2px #111;letter-spacing:3px;line-height:1;text-shadow:3px 3px 0 #111}
         .cc-sign-sub{font-size:10px;color:#8a5f00;font-weight:900;letter-spacing:3px;text-transform:uppercase;margin-top:3px}
 
-        .cc-awning{height:28px;border-left:4px solid #111;border-right:4px solid #111;background:repeating-linear-gradient(90deg,#1757a8 0,#1757a8 24px,#fff 24px,#fff 48px);position:relative;overflow:visible}
-        .cc-awning::after{content:'';position:absolute;bottom:-11px;left:-4px;right:-4px;height:11px;
-          background:
-            radial-gradient(circle at 50% 0%,transparent 10px,#1757a8 10px) -10px 0/20px 100%,
-            radial-gradient(circle at 50% 0%,transparent 10px,#fff 10px) 0 0/20px 100%;
-          border-left:4px solid #111;border-right:4px solid #111;z-index:3}
-
-        .cc-window-row{background:#FFE840;border:4px solid #111;border-top:none;display:grid;grid-template-columns:38px 1fr 38px;grid-template-rows:auto auto;align-items:center;gap:6px 8px;padding:10px 12px;margin-top:11px}
-        .cc-w-staff{font-size:28px;animation:cc-bob 2.2s ease-in-out infinite;text-align:center;grid-row:1/3}
-        .cc-w-staff2{font-size:28px;animation:cc-bob 2.6s ease-in-out infinite .5s;text-align:center;grid-row:1/3}
-        @keyframes cc-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-        .cc-w-middle{grid-column:2;display:flex;flex-direction:column;align-items:center;gap:6px}
-        .cc-w-chips{font-size:20px;animation:cc-bob 1.8s ease-in-out infinite .2s}
-
-        .cc-w-badge-hot{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;background:linear-gradient(135deg,#ff4500,#ff8c00);color:#fff;font-family:'Bangers',cursive;font-size:14px;letter-spacing:1.5px;padding:5px 12px;border:2.5px solid #111;border-radius:5px;box-shadow:2.5px 2.5px 0 #111}
-        .cc-w-badge-base{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;background:#fff;color:#0052ff;font-size:11px;font-weight:900;letter-spacing:.4px;padding:5px 10px;border:2px solid #0052ff;border-radius:7px;box-shadow:2.5px 2.5px 0 #0052ff}
-        .cc-base-logo{width:17px;height:17px;flex-shrink:0}
-        .cc-base-label{display:flex;flex-direction:column;line-height:1.05;text-align:left}
-        .cc-base-label span:first-child{font-size:8.5px;color:#999;letter-spacing:1px;text-transform:uppercase;font-weight:800}
-        .cc-base-label span:last-child{font-size:11px;color:#0052ff;font-family:'Bangers',cursive;letter-spacing:1px}
-
-        .cc-bricks{height:18px;background:#c0392b;border:4px solid #111;border-top:0;
-          background-image:
-            repeating-linear-gradient(0deg,transparent,transparent 8px,rgba(0,0,0,0.2) 8px,rgba(0,0,0,0.2) 9px),
-            repeating-linear-gradient(90deg,transparent,transparent 32px,rgba(0,0,0,0.2) 32px,rgba(0,0,0,0.2) 34px)}
-        .cc-pavement{height:13px;background:#d4c9a8;border:4px solid #111;border-top:2px dashed #bbb}
+        .cc-awning{height:30px;border:4px solid #111;border-top:0;border-radius:0 0 8px 8px;background:repeating-linear-gradient(90deg,#1757a8 0,#1757a8 24px,#fff 24px,#fff 48px)}
 
         @media (max-width:480px){
           .cc-sign-main{font-size:30px}
           .cc-shop-logo{width:85px}
-          .cc-w-badge-hot{font-size:11px;padding:4px 8px}
-          .cc-base-label span:last-child{font-size:9px}
         }
       `}</style>
 
@@ -229,24 +202,6 @@ export default function Home() {
           </div>
         </div>
         <div className="cc-awning" />
-        <div className="cc-window-row">
-          <div className="cc-w-staff">👩‍🍳</div>
-          <div className="cc-w-middle">
-            <div className="cc-w-badge-hot">🔥 HOT &amp; FRESH</div>
-            <div className="cc-w-chips">🍟🍟🍟</div>
-            <div className="cc-w-badge-base">
-              <svg className="cc-base-logo" viewBox="0 0 111 111" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="55.5" cy="55.5" r="55.5" fill="#0052FF"/>
-                <path fillRule="evenodd" clipRule="evenodd" d="M55.5 103C81.7 103 103 81.7 103 55.5S81.7 8 55.5 8 8 29.3 8 55.5s21.3 47.5 47.5 47.5zm0-8c-21.8 0-39.5-17.7-39.5-39.5S33.7 16 55.5 16s39.5 17.7 39.5 39.5S77.3 95 55.5 95z" fill="white"/>
-                <path d="M55.49 36.5c10.49 0 19.33 7.1 21.76 16.75H90.5C87.84 37.94 73.1 27 55.49 27 38.49 27 24 40.7 24 55.5S38.49 84 55.49 84c17.61 0 32.35-10.94 35.01-26.25H77.25C74.82 67.4 65.98 74.5 55.49 74.5c-10.49 0-19-8.5-19-19s8.51-19 19-19z" fill="white"/>
-              </svg>
-              <div className="cc-base-label"><span>Built on</span><span>BASE SEPOLIA</span></div>
-            </div>
-          </div>
-          <div className="cc-w-staff2">👨‍🍳</div>
-        </div>
-        <div className="cc-bricks" />
-        <div className="cc-pavement" />
       </div>
 
 
