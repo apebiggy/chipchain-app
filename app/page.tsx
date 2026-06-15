@@ -208,7 +208,6 @@ export default function Home() {
       {/* Header */}
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14, flexWrap:'wrap', gap:8 }}>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-          <div style={{ fontFamily:'serif', fontSize:26, color:'#cc1111', fontWeight:900 }}>🐟 CHIP CHAIN</div>
           <button onClick={() => setShowFaq(true)} style={{
             background:'#FFD700', border:'2px solid #111', borderRadius:'50%',
             width:24, height:24, fontWeight:900, fontSize:13, cursor:'pointer',
