@@ -8,10 +8,13 @@ interface Props { currentAddress?: string }
 const medals: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' }
 
 function LeaderRow({ entry, isYou, isPinned = false }: { entry: LeaderEntry; isYou: boolean; isPinned?: boolean }) {
-  // Resolve Basename onchain (Base mainnet registry) for this address
+  // Resolve Basename onchain (Base mainnet registry) for this address.
+  // `as any` works around a type-only mismatch between the project's viem
+  // version and OnchainKit's internally bundled viem (Chain type shapes differ
+  // structurally but are runtime-compatible).
   const { data: resolvedName, isLoading: nameLoading } = useName({
     address: entry.wallet_address as `0x${string}`,
-    chain: base,
+    chain: base as any,
   })
 
   const fallback = formatName(entry)
