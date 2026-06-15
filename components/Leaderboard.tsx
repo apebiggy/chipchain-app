@@ -1,45 +1,57 @@
 'use client'
-import { useLeaderboard, formatName, LeaderEntry } from '@/hooks/useLeaderboard'
+import { useName } from '@coinbase/onchainkit/identity'
+import { base } from 'viem/chains'
+import { useLeaderboard, formatName, formatAddress, LeaderEntry } from '@/hooks/useLeaderboard'
 
 interface Props { currentAddress?: string }
 
+const medals: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' }
+
+function LeaderRow({ entry, isYou, isPinned = false }: { entry: LeaderEntry; isYou: boolean; isPinned?: boolean }) {
+  // Resolve Basename onchain (Base mainnet registry) for this address
+  const { data: resolvedName, isLoading: nameLoading } = useName({
+    address: entry.wallet_address as `0x${string}`,
+    chain: base,
+  })
+
+  const fallback = formatName(entry)
+  const name = resolvedName || fallback
+  const isBase = !nameLoading && (name.endsWith('.base') || name.endsWith('.base.eth'))
+  const baseLabel = name.replace(/\.base(\.eth)?$/, '')
+  const baseSuffix = name.endsWith('.base.eth') ? '.base.eth' : '.base'
+
+  return (
+    <div
+      style={{
+        ...S.row,
+        background: isYou ? '#e8f0ff' : 'transparent',
+        borderLeft: isYou ? '3px solid #0052ff' : '3px solid transparent',
+        borderTop: isPinned ? '2px dashed #ddd' : undefined,
+      }}
+    >
+      <span style={S.rank}>{medals[entry.rank] || `#${entry.rank}`}</span>
+      <span style={{ flex: 1, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', minWidth: 0 }}>
+        {isBase ? (
+          <span>
+            <span style={S.baseName}>{baseLabel}</span>
+            <span style={S.baseSuffix}>{baseSuffix}</span>
+          </span>
+        ) : (
+          <span style={S.address}>{nameLoading ? formatAddress(entry.wallet_address) : name}</span>
+        )}
+        {isYou && <span style={S.youBadge}>YOU</span>}
+      </span>
+      <span style={S.served}>{entry.total_served.toLocaleString()}</span>
+      <span style={S.chip}>
+        {entry.total_chip.toLocaleString()}
+        {entry.collection_complete && <span style={S.multiplierBadge}>2x</span>}
+      </span>
+    </div>
+  )
+}
+
 export function Leaderboard({ currentAddress }: Props) {
   const { top50, you, loading, lastUpdate } = useLeaderboard(currentAddress, 30000)
-  const medals: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' }
-
-  function renderRow(e: LeaderEntry, isYou: boolean, isPinned = false) {
-    const name = formatName(e)
-    const isBase = name.includes('.base')
-    return (
-      <div
-        key={e.wallet_address}
-        style={{
-          ...S.row,
-          background: isYou ? '#e8f0ff' : 'transparent',
-          borderLeft: isYou ? '3px solid #0052ff' : '3px solid transparent',
-          borderTop: isPinned ? '2px dashed #ddd' : undefined,
-        }}
-      >
-        <span style={S.rank}>{medals[e.rank] || `#${e.rank}`}</span>
-        <span style={{ flex: 1, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', minWidth: 0 }}>
-          {isBase ? (
-            <span>
-              <span style={S.baseName}>{name.replace('.base', '')}</span>
-              <span style={S.baseSuffix}>.base</span>
-            </span>
-          ) : (
-            <span style={S.address}>{name}</span>
-          )}
-          {isYou && <span style={S.youBadge}>YOU</span>}
-        </span>
-        <span style={S.served}>{e.total_served.toLocaleString()}</span>
-        <span style={S.chip}>
-          {e.total_chip.toLocaleString()}
-          {e.collection_complete && <span style={S.multiplierBadge}>2x</span>}
-        </span>
-      </div>
-    )
-  }
 
   if (loading) {
     return (
@@ -77,15 +89,16 @@ export function Leaderboard({ currentAddress }: Props) {
       </div>
 
       <div style={S.scroll}>
-        {top50.map((entry, i) =>
-          renderRow(
-            entry,
-            currentAddress?.toLowerCase() === entry.wallet_address.toLowerCase()
-          )
-        )}
+        {top50.map((entry) => (
+          <LeaderRow
+            key={entry.wallet_address}
+            entry={entry}
+            isYou={currentAddress?.toLowerCase() === entry.wallet_address.toLowerCase()}
+          />
+        ))}
 
         {/* Pinned "you" row if outside top 50 */}
-        {you && renderRow(you, true, true)}
+        {you && <LeaderRow key={`you-${you.wallet_address}`} entry={you} isYou isPinned />}
       </div>
 
       <div style={S.footer}>
