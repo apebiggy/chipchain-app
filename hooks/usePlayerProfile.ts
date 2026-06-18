@@ -11,6 +11,7 @@ export interface PlayerProfile {
   profileChip:   number
   totalServed:   number
   totalEarned:   number
+  hasMultiplier: boolean
   ethBalance:    string
   // Offchain (Supabase)
   servedToday:   number
@@ -81,6 +82,7 @@ export function usePlayerProfile(): PlayerProfile {
   const profileChip   = playerData ? Number(playerData[1]) : 0
   const totalServed   = playerData ? Number(playerData[2]) : 0
   const totalEarned   = playerData ? Number(playerData[3]) : 0
+  const hasMultiplier = playerData ? Boolean(playerData[4]) : false
   const chipBalance   = chipBal    ? Number(chipBal)        : 0
 
   return {
@@ -89,6 +91,7 @@ export function usePlayerProfile(): PlayerProfile {
     profileChip,
     totalServed,
     totalEarned,
+    hasMultiplier,
     ethBalance: ethBal ? `${parseFloat(ethBal.formatted).toFixed(6)} ETH` : '0 ETH',
     servedToday,
     basename,
