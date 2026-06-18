@@ -101,7 +101,8 @@ export default function Home() {
     setServing(true)
     try {
       await serve(tip, address)
-      setLastMsg(`⛓ +${tip} $CHIP minted onchain!`)
+      const earned = profile.hasMultiplier ? tip * 2 : tip
+      setLastMsg(`⛓ +${earned} $CHIP minted onchain!${profile.hasMultiplier ? ' (2x)' : ''}`)
       setCustomer(null); setTray([]); setStep(1); setTimerLeft(0)
       profile.refetch()
       setQueue(prev => {
@@ -119,7 +120,7 @@ export default function Home() {
   if (!isConnected) {
     return (
       <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', background:'#1a90d8', padding:24, textAlign:'center', fontFamily:'Nunito,sans-serif' }}>
-        <div style={{ fontSize:80, marginBottom:16 }}>🐟</div>
+        <img src="/branding/logo-full.png" alt="Chip Chain" style={{ width: 160, height: 'auto', marginBottom: 16, filter: 'drop-shadow(3px 4px 0 rgba(0,0,0,0.3))' }} />
         <h1 style={{ fontFamily:'serif', fontSize:48, color:'#cc1111', textShadow:'3px 3px 0 #111', marginBottom:8, letterSpacing:4 }}>CHIP CHAIN</h1>
         <p style={{ color:'#fff', fontWeight:800, marginBottom:28, fontSize:16 }}>The Great British Fry-Off · Live on Base Sepolia</p>
         <button onClick={() => connect({ connector: coinbaseWallet({ appName:'Chip Chain' }) })}
@@ -312,8 +313,13 @@ export default function Home() {
 
             {/* LEFT: Order */}
             <div style={{ background:'#fff', border:'3px solid #111', borderRadius:10, overflow:'hidden' }}>
-              <div style={{ background:'#e67e22', color:'#fff', padding:'8px 12px', fontWeight:900, fontSize:14 }}>
-                {customer?`${customer.e} ${customer.n}'s Order`:'WAITING FOR CUSTOMER'}
+              <div style={{ background:'#e67e22', color:'#fff', padding:'8px 12px', fontWeight:900, fontSize:14, display:'flex', alignItems:'center', justifyContent:'space-between', gap:6 }}>
+                <span>{customer?`${customer.e} ${customer.n}'s Order`:'WAITING FOR CUSTOMER'}</span>
+                {profile.hasMultiplier && (
+                  <span style={{ background:'#FFD700', color:'#111', border:'2px solid #111', borderRadius:5, padding:'1px 6px', fontSize:10, fontWeight:900, flexShrink:0 }} title="Collection complete — all $CHIP earnings doubled">
+                    🏆 2x
+                  </span>
+                )}
               </div>
               <div style={{ padding:12 }}>
                 {/* Queue */}
@@ -332,7 +338,7 @@ export default function Home() {
                         <div style={{ fontWeight:900, fontSize:15 }}>{customer.n}</div>
                         <div style={{ fontSize:10, color:'#888', fontStyle:'italic' }}>{customer.q}</div>
                         <div style={{ background:'#FFD700', display:'inline-block', padding:'2px 8px', borderRadius:4, border:'1.5px solid #111', fontSize:10, fontWeight:900, marginTop:4 }}>
-                          💰 +{customer.tip} $CHIP
+                          💰 +{profile.hasMultiplier ? customer.tip * 2 : customer.tip} $CHIP{profile.hasMultiplier ? ' (2x)' : ''}
                         </div>
                       </div>
                     </div>
