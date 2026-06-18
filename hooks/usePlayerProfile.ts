@@ -85,6 +85,28 @@ export function usePlayerProfile(): PlayerProfile {
   const hasMultiplier = playerData ? Boolean(playerData[4]) : false
   const chipBalance   = chipBal    ? Number(chipBal)        : 0
 
+  // ── Self-heal: if onchain says Auto Serve is active but the one-time
+  // post-purchase Supabase PATCH silently failed (no error handling there),
+  // the cron job would otherwise never see this wallet and Profile $CHIP
+  // would stay stuck at 0 forever. Reconcile once per address per session —
+  // onchain is the source of truth, so this is always safe/idempotent.
+  const reconciledRef = useState(() => new Set<string>())[0]
+  useEffect(() => {
+    if (!address || !hasAutoServe) return
+    const key = address.toLowerCase()
+    if (reconciledRef.has(key)) return
+    reconciledRef.add(key)
+
+    fetch('/api/profile', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-wallet-address': address },
+      body: JSON.stringify({ action: 'activate_autoserve' }),
+    }).catch(() => {
+      // Will retry next mount/address-change; harmless no-op until then.
+      reconciledRef.delete(key)
+    })
+  }, [address, hasAutoServe, reconciledRef])
+
   return {
     chipBalance,
     hasAutoServe,
