@@ -9,7 +9,7 @@ export const CONTRACTS = {
 // ── Fees ───────────────────────────────────────────────────────
 export const SERVE_FEE      = BigInt("4000000000000")     // 0.000004 ETH in wei
 export const WITHDRAW_FEE   = BigInt("4000000000000")     // 0.000004 ETH in wei
-export const AUTO_SERVE_FEE = BigInt("1600000000000000")  // 0.0016 ETH in wei
+export const AUTO_SERVE_FEE = BigInt("3000000000000000")  // 0.003 ETH in wei
 
 // ── ChippyChain ABI ────────────────────────────────────────────
 export const GAME_ABI = [
@@ -18,9 +18,10 @@ export const GAME_ABI = [
     type: "function",
     stateMutability: "payable",
     inputs: [
-      { name: "chipAmount", type: "uint256" },
-      { name: "headline",   type: "string"  },
-      { name: "rare",       type: "bool"    },
+      { name: "chipAmount",    type: "uint256" },
+      { name: "headline",      type: "string"  },
+      { name: "headlineIndex", type: "uint8"   },
+      { name: "rare",          type: "bool"    },
     ],
     outputs: [],
   },
@@ -48,6 +49,7 @@ export const GAME_ABI = [
       { name: "profileChip",  type: "uint256" },
       { name: "served",       type: "uint256" },
       { name: "totalEarned",  type: "uint256" },
+      { name: "hasMultiplier", type: "bool"   },
     ],
   },
   {
@@ -142,6 +144,20 @@ export const WRAP_ABI = [
       { name: "originalOwner", type: "address" },
       { name: "serveNumber",   type: "uint256" },
     ],
+  },
+  {
+    name: "hasCompleteCollection",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "player", type: "address" }],
+    outputs: [{ name: "", type: "bool" }],
+  },
+  {
+    name: "uniqueTypesOwned",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "", type: "address" }],
+    outputs: [{ name: "", type: "uint8" }],
   },
   {
     name: "WrapMinted",
