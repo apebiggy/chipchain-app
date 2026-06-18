@@ -82,7 +82,11 @@ export function usePlayerProfile(): PlayerProfile {
   const profileChip   = playerData ? Number(playerData[1]) : 0
   const totalServed   = playerData ? Number(playerData[2]) : 0
   const totalEarned   = playerData ? Number(playerData[3]) : 0
-  const hasMultiplier = playerData ? Boolean(playerData[4]) : false
+  // NOTE: hasMultiplier is a v2-contract feature (onchain 2x collection bonus).
+  // The currently-deployed testnet contract is still v1 and has no such field —
+  // hardcode false here until the v2 contract is live and this is wired back
+  // to getPlayerData()'s 5th return value.
+  const hasMultiplier = false
   const chipBalance   = chipBal    ? Number(chipBal)        : 0
 
   // ── Self-heal: if onchain says Auto Serve is active but the one-time

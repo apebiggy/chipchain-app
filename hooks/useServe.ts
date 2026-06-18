@@ -27,7 +27,7 @@ export function useServe() {
         address: CONTRACTS.GAME_CONTRACT,
         abi: GAME_ABI,
         functionName: 'claimServe',
-        args: [BigInt(chipAmount), headline, headlineIndex, rare],
+        args: [BigInt(chipAmount), headline, rare],
         value: SERVE_FEE,
       })
 

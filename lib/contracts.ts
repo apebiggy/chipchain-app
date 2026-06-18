@@ -18,10 +18,9 @@ export const GAME_ABI = [
     type: "function",
     stateMutability: "payable",
     inputs: [
-      { name: "chipAmount",    type: "uint256" },
-      { name: "headline",      type: "string"  },
-      { name: "headlineIndex", type: "uint8"   },
-      { name: "rare",          type: "bool"    },
+      { name: "chipAmount", type: "uint256" },
+      { name: "headline",   type: "string"  },
+      { name: "rare",       type: "bool"    },
     ],
     outputs: [],
   },
@@ -49,7 +48,6 @@ export const GAME_ABI = [
       { name: "profileChip",  type: "uint256" },
       { name: "served",       type: "uint256" },
       { name: "totalEarned",  type: "uint256" },
-      { name: "hasMultiplier", type: "bool"   },
     ],
   },
   {
