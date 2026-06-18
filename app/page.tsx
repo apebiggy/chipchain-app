@@ -225,6 +225,16 @@ export default function Home() {
           }} title="Roadmap">
             🗺️
           </button>
+          <a href="https://x.com/ChipChainShop" target="_blank" rel="noopener noreferrer" style={{
+            background:'#111', border:'2px solid #111', borderRadius:'50%',
+            width:24, height:24, cursor:'pointer', flexShrink:0,
+            display:'flex', alignItems:'center', justifyContent:'center',
+            boxShadow:'2px 2px 0 #555', textDecoration:'none',
+          }} title="Follow @ChipChainShop on X">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/>
+            </svg>
+          </a>
         </div>
         <div style={{ display:'flex', gap:6, alignItems:'center', flexWrap:'wrap' }}>
           <div style={{ background:'#111', color:'#FFD700', borderRadius:6, padding:'4px 10px', fontSize:12, fontWeight:800 }}>
@@ -480,6 +490,47 @@ export default function Home() {
                 </div>
               ))}
             </div>
+
+            {/* FLEX on X */}
+            {(() => {
+              const tweetText = encodeURIComponent(
+                `I've earned ${profile.chipBalance} $CHIP at Chip Chain 🍟⛓\n` +
+                `${profile.totalServed} customers served${profile.hasMultiplier ? ' · 🏆 2x multiplier active' : ''}\n\n` +
+                `The Great British Fry-Off — live on Base 🔵\nhttps://v0-chipchain.vercel.app\n\n#ChipChain #Base #OnchainGaming`
+              )
+              return (
+                <a
+                  href={`https://x.com/intent/tweet?text=${tweetText}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display:'flex', alignItems:'center', justifyContent:'space-between',
+                    background:'linear-gradient(135deg,#FFD700,#ffb800)',
+                    border:'3px solid #111', borderRadius:10,
+                    padding:'12px 16px', marginBottom:14,
+                    boxShadow:'4px 4px 0 #111', textDecoration:'none',
+                    cursor:'pointer',
+                  }}
+                >
+                  <div>
+                    <div style={{ fontFamily:'serif', fontSize:15, fontWeight:900, color:'#111', letterSpacing:1 }}>
+                      🏆 FLEX YOUR SCORE
+                    </div>
+                    <div style={{ fontSize:11, color:'#555', marginTop:2, fontWeight:700 }}>
+                      {profile.chipBalance} $CHIP · {profile.totalServed} served{profile.hasMultiplier ? ' · 2x active 🔥' : ''}
+                    </div>
+                  </div>
+                  <div style={{
+                    background:'#111', borderRadius:'50%', width:34, height:34,
+                    display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0,
+                  }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/>
+                    </svg>
+                  </div>
+                </a>
+              )
+            })()}
 
             {/* Auto Serve status */}
             <div style={{
