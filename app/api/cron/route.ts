@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { createWalletClient, createPublicClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { baseSepolia } from 'viem/chains'
+import { baseSepolia, base } from 'viem/chains'
 import { CONTRACTS } from '@/lib/contracts'
+
+const isProd = process.env.NEXT_PUBLIC_CHAIN_ID === '8453'
+const ACTIVE_CHAIN = isProd ? base : baseSepolia
+const RPC_URL = isProd ? 'https://mainnet.base.org' : 'https://sepolia.base.org'
 
 const CHIPS_PER_TICK = 100  // 100 CHIP per 10-minute tick = same 14,400/day effective rate
 
@@ -44,13 +48,13 @@ export async function GET(req: NextRequest) {
 
     const walletClient = createWalletClient({
       account,
-      chain: baseSepolia,
-      transport: http('https://sepolia.base.org'),
+      chain: ACTIVE_CHAIN,
+      transport: http(RPC_URL),
     })
 
     const publicClient = createPublicClient({
-      chain: baseSepolia,
-      transport: http('https://sepolia.base.org'),
+      chain: ACTIVE_CHAIN,
+      transport: http(RPC_URL),
     })
 
     // Batch credit all active players at once
