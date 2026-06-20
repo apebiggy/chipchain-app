@@ -497,7 +497,8 @@ export default function Home() {
               const tweetText = encodeURIComponent(
                 `I've earned ${profile.chipBalance} $CHIP at Chip Chain 🍟⛓\n` +
                 `${profile.totalServed} customers served${profile.hasMultiplier ? ' · 🏆 2x multiplier active' : ''}\n\n` +
-                `The Great British Fry-Off — live on Base 🔵\nhttps://v0-chipchain.vercel.app\n\n#ChipChain #Base #OnchainGaming`
+                `The Great British Fry-Off — live on Base 🔵\nhttps://v0-chipchain.vercel.app\n\n` +
+                `Follow @ChipChainShop for updates 🍟\n\n#ChipChain #Base #OnchainGaming`
               )
               return (
                 <a
