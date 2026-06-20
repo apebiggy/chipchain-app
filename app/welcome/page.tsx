@@ -137,10 +137,6 @@ export default function WelcomePage() {
           leaderboard — every transaction is real, on Base.
         </p>
         <Link href="/" style={S.ctaBtn} className="cc-hard">🍟 PLAY NOW — CONNECT WALLET</Link>
-        <div style={S.heroNote}>
-          Testnet ETH only — no real-world value yet. Your $CHIP and Wrap collection
-          progress is expected to count toward mainnet rewards.
-        </div>
       </div>
 
       {/* ── TICKER ─────────────────────────────────────────── */}
