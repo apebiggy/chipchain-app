@@ -54,6 +54,7 @@ export function useServe() {
       return hash
 
     } catch (err: any) {
+      console.error('claimServe error:', err)
       setStatus('error')
       setError(err?.shortMessage || err?.message || 'Transaction failed')
       throw err

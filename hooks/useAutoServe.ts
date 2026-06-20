@@ -62,6 +62,7 @@ export function useAutoServe() {
       setBuyStatus('confirmed')
       return hash
     } catch (err: any) {
+      console.error('buyAutoServe error:', err)
       setBuyStatus('error')
       setError(err?.shortMessage || 'Transaction failed')
       throw err
@@ -95,6 +96,7 @@ export function useAutoServe() {
       setWithdrawStatus('confirmed')
       return hash
     } catch (err: any) {
+      console.error('withdrawProfile error:', err)
       setWithdrawStatus('error')
       setError(err?.shortMessage || 'Transaction failed')
       throw err

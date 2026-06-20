@@ -109,7 +109,8 @@ export default function Home() {
         const extra = [...CUSTOMERS].sort(() => Math.random() - 0.5)[0]
         return [...prev, extra]
       })
-    } catch {
+    } catch (err) {
+      console.error('Serve failed:', err)
       setLastMsg('Transaction cancelled or failed')
     } finally {
       setServing(false)
