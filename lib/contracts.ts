@@ -6,6 +6,18 @@ export const CONTRACTS = {
   GAME_CONTRACT: process.env.NEXT_PUBLIC_GAME_CONTRACT as `0x${string}`,
 }
 
+// ── Base Builder Code attribution (ERC-8021) ────────────────────
+// Appended to every wallet transaction so Base attributes onchain
+// activity back to Chip Chain — powers analytics on base.dev and
+// qualifies for potential future builder rewards. Per Base's own
+// docs, the "recommended" client-level wagmi config option isn't
+// actually present in any currently-published wagmi version (verified
+// directly against package internals) — only the documented "legacy"
+// per-transaction approach is real and working today, so that's what
+// we use here, passed explicitly into every writeContractAsync call.
+import { Attribution } from 'ox/erc8021'
+export const BUILDER_CODE_SUFFIX = Attribution.toDataSuffix({ codes: ['bc_h20d7bcz'] })
+
 // ── Fees ───────────────────────────────────────────────────────
 // These are FALLBACK values only, used for the very first render before
 // the live useFees() hook resolves. The actual fee enforced onchain is

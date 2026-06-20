@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
-import { CONTRACTS, GAME_ABI } from '@/lib/contracts'
+import { CONTRACTS, GAME_ABI, BUILDER_CODE_SUFFIX } from '@/lib/contracts'
 import { useFees } from '@/hooks/useFees'
 
 export type TxStatus = 'idle' | 'signing' | 'pending' | 'confirmed' | 'error'
@@ -30,6 +30,7 @@ export function useAutoServe() {
         functionName: 'buyAutoServe',
         args: [],
         value: autoServeFee,
+        dataSuffix: BUILDER_CODE_SUFFIX,
       })
       setBuyHash(hash)
       setBuyStatus('pending')
@@ -79,6 +80,7 @@ export function useAutoServe() {
         functionName: 'withdrawProfile',
         args: [],
         value: withdrawFee,
+        dataSuffix: BUILDER_CODE_SUFFIX,
       })
       setWithdrawHash(hash)
       setWithdrawStatus('pending')
