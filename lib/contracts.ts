@@ -7,9 +7,15 @@ export const CONTRACTS = {
 }
 
 // ── Fees ───────────────────────────────────────────────────────
-export const SERVE_FEE      = BigInt("4000000000000")     // 0.000004 ETH in wei
-export const WITHDRAW_FEE   = BigInt("4000000000000")     // 0.000004 ETH in wei
-export const AUTO_SERVE_FEE = BigInt("3000000000000000")  // 0.003 ETH in wei
+// These are FALLBACK values only, used for the very first render before
+// the live useFees() hook resolves. The actual fee enforced onchain is
+// whatever ChippyChain.getFees() returns right now — always read live via
+// useFees() for any actual transaction, never trust these constants alone.
+// (Lesson learned: hardcoded fee constants silently drifting out of sync
+// with the deployed contract has broken Serve/Withdraw/AutoServe twice.)
+export const SERVE_FEE_FALLBACK      = BigInt("5000000000000")     // 0.000005 ETH in wei
+export const WITHDRAW_FEE_FALLBACK   = BigInt("5000000000000")     // 0.000005 ETH in wei
+export const AUTO_SERVE_FEE_FALLBACK = BigInt("3000000000000000")  // 0.003 ETH in wei
 
 // ── ChippyChain ABI ────────────────────────────────────────────
 export const GAME_ABI = [
@@ -38,6 +44,17 @@ export const GAME_ABI = [
     stateMutability: "payable",
     inputs: [],
     outputs: [],
+  },
+  {
+    name: "getFees",
+    type: "function",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [
+      { name: "_serveFee",     type: "uint256" },
+      { name: "_withdrawFee",  type: "uint256" },
+      { name: "_autoServeFee", type: "uint256" },
+    ],
   },
   {
     name: "getPlayerData",

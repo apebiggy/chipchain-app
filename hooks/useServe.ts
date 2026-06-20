@@ -1,7 +1,8 @@
 'use client'
 import { useState } from 'react'
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
-import { CONTRACTS, GAME_ABI, SERVE_FEE, randomHeadline } from '@/lib/contracts'
+import { CONTRACTS, GAME_ABI, randomHeadline } from '@/lib/contracts'
+import { useFees } from '@/hooks/useFees'
 
 export type ServeStatus = 'idle' | 'signing' | 'pending' | 'confirmed' | 'error'
 
@@ -11,6 +12,7 @@ export function useServe() {
   const [error, setError] = useState<string | null>(null)
 
   const { writeContractAsync } = useWriteContract()
+  const { serveFee } = useFees()
 
   const { isSuccess } = useWaitForTransactionReceipt({
     hash: txHash,
@@ -28,7 +30,7 @@ export function useServe() {
         abi: GAME_ABI,
         functionName: 'claimServe',
         args: [BigInt(chipAmount), headline, headlineIndex, rare],
-        value: SERVE_FEE,
+        value: serveFee,
       })
 
       setTxHash(hash)
