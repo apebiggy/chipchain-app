@@ -494,10 +494,11 @@ export default function Home() {
 
             {/* FLEX on X */}
             {(() => {
+              const flexUrl = `https://v0-chipchain.vercel.app/flex?chip=${profile.chipBalance}&served=${profile.totalServed}&multiplier=${profile.hasMultiplier ? '1' : '0'}&t=${profile.totalServed % 4}`
               const tweetText = encodeURIComponent(
                 `I've earned ${profile.chipBalance} $CHIP at Chip Chain 🍟⛓\n` +
                 `${profile.totalServed} customers served${profile.hasMultiplier ? ' · 🏆 2x multiplier active' : ''}\n\n` +
-                `The Great British Fry-Off — live on Base 🔵\nhttps://v0-chipchain.vercel.app\n\n` +
+                `The Great British Fry-Off — live on Base 🔵\n${flexUrl}\n\n` +
                 `Follow @ChipChainShop for updates 🍟\n\n#ChipChain #Base #OnchainGaming`
               )
               return (
