@@ -13,7 +13,7 @@ const TICKER_ITEMS = [
   '⭐ COMPLETE THE SET FOR A 2x MULTIPLIER',
   '🤖 AUTO SERVE EARNS 10 $CHIP/MIN PASSIVELY',
   '🏆 CLIMB THE LIVE TOP-50 LEADERBOARD',
-  '🚀 TESTNET PROGRESS COUNTS TOWARD MAINNET REWARDS',
+  '⛓ LIVE ON BASE MAINNET — REAL $CHIP, REAL ONCHAIN',
   '💰 ALL FEES VISIBLE ONCHAIN VIA TREASURY',
 ]
 
@@ -51,7 +51,7 @@ const FEATURES = [
 ]
 
 const STEPS = [
-  { n: '1', emoji: '🔌', title: 'Connect Wallet', text: 'Connect on Base Sepolia — MetaMask or Coinbase Wallet.' },
+  { n: '1', emoji: '🔌', title: 'Connect Wallet', text: 'Connect on Base Mainnet — MetaMask or Coinbase Wallet.' },
   { n: '2', emoji: '🔔', title: 'Get a Customer', text: 'Press "Get Next Customer" to see their order and tip ($CHIP reward).' },
   { n: '3', emoji: '🍟', title: 'Build & Serve', text: 'Tap the right menu items, then SERVE IT — a real Base transaction.' },
   { n: '4', emoji: '🎉', title: 'Earn & Collect', text: '$CHIP mints to your wallet + a random Newspaper Wrap NFT. Repeat, climb the board.' },
@@ -64,15 +64,15 @@ const FEES = [
 ]
 
 const ROADMAP_SUMMARY = [
-  { emoji: '🍟', title: 'Phase 1 — Testnet', status: 'LIVE', color: '#27ae60', text: 'Core loop live on Base Sepolia — serve, earn $CHIP, collect Wraps, Auto Serve, leaderboard.' },
-  { emoji: '📣', title: 'Phase 2 — Community', status: 'NEXT', color: '#FFD700', text: 'X, Farcaster channel, Discord — building a real audience before mainnet.' },
-  { emoji: '⛓', title: 'Phase 3 — Mainnet', status: 'PLANNED', color: '#eee', text: 'Redeploy contracts to Base Mainnet, treasury starts collecting real fees.' },
-  { emoji: '🪙', title: 'Phase 4 — $CHIP TGE', status: 'PLANNED', color: '#eee', text: '$CHIP becomes tradeable. Testnet balances + Wrap collections snapshotted for rewards.' },
+  { emoji: '🍟', title: 'Phase 1 — Testnet', status: 'COMPLETE', color: '#27ae60', text: 'Core loop proven on Base Sepolia — serve, earn $CHIP, collect Wraps, Auto Serve, leaderboard.' },
+  { emoji: '⛓', title: 'Phase 2 — Mainnet Launch', status: 'LIVE', color: '#27ae60', text: 'Live now on Base Mainnet — real ETH fees, real onchain $CHIP, testnet progress carried forward.' },
+  { emoji: '📣', title: 'Phase 3 — Community', status: 'NOW', color: '#FFD700', text: 'X, Farcaster channel, Discord — building a real audience now that mainnet is live.' },
+  { emoji: '🪙', title: 'Phase 4 — $CHIP TGE', status: 'PLANNED', color: '#eee', text: '$CHIP becomes tradeable. Total $CHIP + Wrap collections snapshotted for rewards.' },
   { emoji: '🍔', title: 'Phase 5 — New Restaurants', status: 'PLANNED', color: '#eee', text: 'Taco Truck, Pizza Place, Curry House — shared $CHIP economy across menus.' },
 ]
 
 const FAQ_TEASER = [
-  { q: '🚀 Is this testnet or real?', a: 'Currently Base Sepolia testnet — fully functional, no real value yet. Progress (both $CHIP and Wraps) is expected to count toward mainnet rewards.' },
+  { q: '🚀 Is this testnet or real?', a: 'Live on Base Mainnet — fully functional with real ETH and real onchain $CHIP. Testnet-era progress (both $CHIP and Wraps) is combined into your live leaderboard total.' },
   { q: '🪙 What is $CHIP?', a: 'Your onchain points balance, earned by serving customers or running Auto Serve. Non-transferable for now — not a tradeable token yet.' },
   { q: '📰 Do I get Wraps from Auto Serve?', a: 'No — only manual SERVE IT actions mint Newspaper Wraps. Auto Serve earns $CHIP only.' },
   { q: '💰 Where do the fees go?', a: 'Every serve, withdrawal, and Auto Serve purchase sends a small ETH fee to the Treasury contract — fully visible onchain, funding development and future rewards.' },
@@ -129,7 +129,7 @@ export default function WelcomePage() {
         <h1 className="cc-hero-title" style={S.heroTitle}>CHIP CHAIN</h1>
         <div style={S.heroSubtitle}>THE GREAT BRITISH FRY-OFF</div>
         <div style={{ ...S.badge, background: '#27ae60' }} className="cc-hard-sm">
-          🟢 LIVE ON BASE SEPOLIA TESTNET
+          🟢 LIVE ON BASE MAINNET
         </div>
         <p style={S.heroText}>
           Run your own onchain chip shop. Serve customers, earn <b>$CHIP</b> directly
@@ -277,7 +277,10 @@ export default function WelcomePage() {
           BUILT ON BASE
         </div>
         <div style={S.footerNote}>
-          Base Sepolia testnet · No real-world value yet · Onchain transparency by design
+          Live on Base Mainnet · Real ETH fees · Onchain transparency by design
+        </div>
+        <div style={{ marginTop: 14 }}>
+          <a href="/terms" style={{ fontSize: 11, color: '#666', textDecoration: 'underline' }}>Terms of Service</a>
         </div>
       </div>
     </div>
