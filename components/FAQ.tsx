@@ -63,6 +63,8 @@ export function FAQ() {
       </div>
       <div style={S.footer}>
         <a href="/terms" style={S.footerLink}>Terms of Service</a>
+        <span style={{ color: '#ddd', margin: '0 8px' }}>·</span>
+        <a href="/privacy" style={S.footerLink}>Privacy Policy</a>
       </div>
     </div>
   )

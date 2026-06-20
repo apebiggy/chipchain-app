@@ -277,6 +277,8 @@ export default function WelcomePage() {
         </div>
         <div style={{ marginTop: 14 }}>
           <a href="/terms" style={{ fontSize: 11, color: '#666', textDecoration: 'underline' }}>Terms of Service</a>
+          <span style={{ color: '#444', margin: '0 8px' }}>·</span>
+          <a href="/privacy" style={{ fontSize: 11, color: '#666', textDecoration: 'underline' }}>Privacy Policy</a>
         </div>
       </div>
     </div>
