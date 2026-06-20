@@ -13,6 +13,7 @@ export interface PlayerProfile {
   totalEarned:   number
   hasMultiplier: boolean
   ethBalance:    string
+  ethBalanceWei: bigint
   // Offchain (Supabase) — combined testnet + mainnet, matches leaderboard
   totalServed:   number
   servedToday:   number  // NOTE: despite the name, this is a lifetime count, not daily — see usePlayerProfile.ts
@@ -118,6 +119,7 @@ export function usePlayerProfile(): PlayerProfile {
     totalEarned,
     hasMultiplier,
     ethBalance: ethBal ? `${parseFloat(ethBal.formatted).toFixed(6)} ETH` : '0 ETH',
+    ethBalanceWei: ethBal ? ethBal.value : BigInt(0),
     totalServed: combinedServed,
     servedToday,
     basename,

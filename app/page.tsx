@@ -5,10 +5,16 @@ import { coinbaseWallet, metaMask } from 'wagmi/connectors'
 import { usePlayerProfile } from '@/hooks/usePlayerProfile'
 import { useServe } from '@/hooks/useServe'
 import { useAutoServe } from '@/hooks/useAutoServe'
+import { useFees } from '@/hooks/useFees'
 import { Leaderboard } from '@/components/Leaderboard'
 import { WrapGallery } from '@/components/WrapGallery'
 import { FAQ } from '@/components/FAQ'
 import { Roadmap } from '@/components/Roadmap'
+
+function formatEth(wei: bigint): string {
+  const eth = Number(wei) / 1e18
+  return eth.toFixed(6).replace(/0+$/, '').replace(/\.$/, '')
+}
 
 const CUSTOMERS = [
   { e:'👴', n:'Barry',  q:'"Same as usual, love"',           o:['fish','chips','salt','ketchup','coke'],          tip:25 },
@@ -46,7 +52,14 @@ export default function Home() {
   const { disconnect } = useDisconnect()
   const profile = usePlayerProfile()
   const { serve, status: serveStatus } = useServe()
-  const { buyAutoServe, withdrawProfile, buyStatus, withdrawStatus } = useAutoServe()
+  const { buyAutoServe, withdrawProfile, buyStatus, withdrawStatus, error: autoServeError } = useAutoServe()
+  const { serveFee, autoServeFee } = useFees()
+
+  // Small flat buffer on top of the fee itself to cover gas (Base gas is tiny,
+  // but this avoids edge-case "insufficient funds" reverts from gas estimation).
+  const GAS_BUFFER = BigInt('2000000000000') // 0.000002 ETH
+  const canAffordServe     = profile.ethBalanceWei >= serveFee + GAS_BUFFER
+  const canAffordAutoServe = profile.ethBalanceWei >= autoServeFee + GAS_BUFFER
 
   const [activeTab,   setActiveTab]   = useState<Tab>('play')
   const [customer,    setCustomer]    = useState<typeof CUSTOMERS[0] | null>(null)
@@ -77,6 +90,17 @@ export default function Home() {
     return () => clearInterval(t)
   }, [customer, timerLeft, serving])
 
+  useEffect(() => {
+    if (!autoServeError) return
+    if (autoServeError.includes('insufficient funds') || autoServeError.includes('exceeds the balance')) {
+      setLastMsg('⚠️ Insufficient ETH balance for this transaction')
+    } else if (autoServeError.includes('User rejected') || autoServeError.includes('User denied')) {
+      setLastMsg('Transaction cancelled')
+    } else {
+      setLastMsg('Transaction cancelled or failed')
+    }
+  }, [autoServeError])
+
   function getNextCustomer() {
     const q = queue.length ? queue : [...CUSTOMERS].sort(() => Math.random() - 0.5)
     setCustomer(q[0])
@@ -97,6 +121,10 @@ export default function Home() {
 
   async function handleServe() {
     if (!customer || !address || !orderReady) return
+    if (!canAffordServe) {
+      setLastMsg(`⚠️ Insufficient ETH balance — you need at least ${formatEth(serveFee + GAS_BUFFER)} ETH to serve`)
+      return
+    }
     const tip = Math.min(customer.tip, 100)
     setServing(true)
     try {
@@ -111,7 +139,14 @@ export default function Home() {
       })
     } catch (err) {
       console.error('Serve failed:', err)
-      setLastMsg('Transaction cancelled or failed')
+      const msg = String(err)
+      if (msg.includes('insufficient funds') || msg.includes('exceeds the balance')) {
+        setLastMsg(`⚠️ Insufficient ETH balance — you need at least ${formatEth(serveFee + GAS_BUFFER)} ETH to serve`)
+      } else if (msg.includes('User rejected') || msg.includes('User denied')) {
+        setLastMsg('Transaction cancelled')
+      } else {
+        setLastMsg('Transaction cancelled or failed')
+      }
     } finally {
       setServing(false)
     }
@@ -299,7 +334,14 @@ export default function Home() {
             <button onClick={getNextCustomer} style={{ flex:2, minHeight:48, background:'#FFD700', border:'3px solid #111', borderRadius:8, fontWeight:900, fontSize:15, cursor:'pointer', boxShadow:'3px 3px 0 #111' }}>
               🛎️ GET NEXT CUSTOMER
             </button>
-            <button onClick={() => profile.hasAutoServe ? setLastMsg('Auto-serve active! Check Profile tab.') : buyAutoServe()}
+            <button onClick={() => {
+                if (profile.hasAutoServe) { setLastMsg('Auto-serve active! Check Profile tab.'); return }
+                if (!canAffordAutoServe) {
+                  setLastMsg(`⚠️ Insufficient ETH balance — you need at least ${formatEth(autoServeFee + GAS_BUFFER)} ETH to activate Auto Serve`)
+                  return
+                }
+                buyAutoServe()
+              }}
               disabled={buyStatus==='signing'||buyStatus==='pending'}
               style={{ flex:1, minHeight:48, background:profile.hasAutoServe?'#27ae60':'#fff', color:profile.hasAutoServe?'#fff':'#111', border:'3px solid #111', borderRadius:8, fontWeight:900, fontSize:13, cursor:'pointer', boxShadow:'3px 3px 0 #111' }}>
               {buyStatus==='signing'?'⏳ Signing...':buyStatus==='pending'?'⏳ Confirming...':profile.hasAutoServe?'🤖 Autoserve ON':'🤖 Autoserve'}
@@ -420,6 +462,11 @@ export default function Home() {
                     boxShadow:orderReady?'0 4px 0 #1a7a42,0 4px 0 2px #111':'none' }}>
                   {serveStatus==='signing'?'⏳ Signing...':serveStatus==='pending'?'⏳ Confirming...':'🍟 SERVE IT!'}
                 </button>
+                {orderReady && !canAffordServe && (
+                  <div style={{ marginTop:6, fontSize:11, fontWeight:800, color:'#cc1111', textAlign:'center' }}>
+                    ⚠️ Insufficient ETH — need at least {formatEth(serveFee + GAS_BUFFER)} ETH to serve
+                  </div>
+                )}
               </div>
 
               {/* Tray */}
