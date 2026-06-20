@@ -15,7 +15,7 @@ export const config = createConfig({
   connectors: [
     coinbaseWallet({
       appName: 'Chip Chain',
-      appLogoUrl: 'https://chipchain.app/logo.png',
+      appLogoUrl: `${process.env.NEXT_PUBLIC_URL || 'https://v0-chipchain.vercel.app'}/branding/icon-1024.png`,
     }),
     metaMask(),
   ],

@@ -541,7 +541,7 @@ export default function Home() {
 
             {/* FLEX on X */}
             {(() => {
-              const flexUrl = `https://v0-chipchain.vercel.app/flex?chip=${profile.chipBalance}&served=${profile.totalServed}&multiplier=${profile.hasMultiplier ? '1' : '0'}&t=${profile.totalServed % 4}`
+              const flexUrl = `${process.env.NEXT_PUBLIC_URL || 'https://v0-chipchain.vercel.app'}/flex?chip=${profile.chipBalance}&served=${profile.totalServed}&multiplier=${profile.hasMultiplier ? '1' : '0'}&t=${profile.totalServed % 4}`
               const tweetText = encodeURIComponent(
                 `I've earned ${profile.chipBalance} $CHIP at Chip Chain 🍟⛓\n` +
                 `${profile.totalServed} customers served${profile.hasMultiplier ? ' · 🏆 2x multiplier active' : ''}\n\n` +
