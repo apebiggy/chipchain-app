@@ -6,6 +6,7 @@ export interface LeaderEntry {
   basename:       string | null
   profile_chip:   number
   total_served:   number
+  auto_serve_active: boolean
   onchain_chip:   number
   base_chip:      number
   total_chip:     number
