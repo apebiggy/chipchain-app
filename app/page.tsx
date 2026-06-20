@@ -123,7 +123,7 @@ export default function Home() {
       <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', background:'#1a90d8', padding:24, textAlign:'center', fontFamily:'Nunito,sans-serif' }}>
         <img src="/branding/logo-full.png" alt="Chip Chain" style={{ width: 160, height: 'auto', marginBottom: 16, filter: 'drop-shadow(3px 4px 0 rgba(0,0,0,0.3))' }} />
         <h1 style={{ fontFamily:'serif', fontSize:48, color:'#cc1111', textShadow:'3px 3px 0 #111', marginBottom:8, letterSpacing:4 }}>CHIP CHAIN</h1>
-        <p style={{ color:'#fff', fontWeight:800, marginBottom:28, fontSize:16 }}>The Great British Fry-Off · Live on Base Sepolia</p>
+        <p style={{ color:'#fff', fontWeight:800, marginBottom:28, fontSize:16 }}>The Great British Fry-Off · Live on Base</p>
         <button onClick={() => connect({ connector: coinbaseWallet({ appName:'Chip Chain' }) })}
           style={{ background:'#0052ff', color:'#fff', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', marginBottom:12, boxShadow:'5px 5px 0 #003dbf', width:'100%', maxWidth:320 }}>
           Connect Base Wallet
@@ -132,7 +132,7 @@ export default function Home() {
           style={{ background:'#fff', color:'#111', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', boxShadow:'5px 5px 0 #111', width:'100%', maxWidth:320 }}>
           🦊 Connect MetaMask
         </button>
-        <p style={{ color:'rgba(255,255,255,.6)', fontSize:12, marginTop:12 }}>Base Sepolia Testnet · No real funds needed</p>
+        <p style={{ color:'rgba(255,255,255,.6)', fontSize:12, marginTop:12 }}>Base Mainnet · Real ETH required for fees</p>
       </div>
     )
   }

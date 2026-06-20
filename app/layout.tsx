@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL || 'https://v0-chipchain.vercel.app'),
   title: 'Chip Chain — The Great British Fry-Off',
   description: 'Serve fish & chips, earn $CHIP onchain, and collect Newspaper Wrap NFTs in this British chippy game built on Base.',
-  keywords: ['Chip Chain', 'Base', 'onchain game', 'fish and chips', 'crypto game', 'NFT', '$CHIP', 'Base Sepolia', 'web3 game'],
+  keywords: ['Chip Chain', 'Base', 'Base Mainnet', 'onchain game', 'fish and chips', 'crypto game', 'NFT', '$CHIP', 'web3 game'],
   robots: {
     index: true,
     follow: true,

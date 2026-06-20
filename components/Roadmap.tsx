@@ -15,42 +15,42 @@ const PHASES: Phase[] = [
   {
     emoji: '🍟',
     title: 'Phase 1 — Chip Chain (Testnet)',
-    subtitle: 'Prove the core loop on Base Sepolia',
-    timeframe: 'Now',
+    subtitle: 'Proved the core loop on Base Sepolia',
+    timeframe: 'Complete',
     status: 'live',
     items: [
       { label: 'Core game: serve, earn $CHIP, mint Newspaper Wraps', done: true },
       { label: 'Auto Serve passive earning', done: true },
       { label: 'Leaderboard with collection multiplier', done: true },
-      { label: 'Open testing — target: 50-200 active testers', done: false },
-      { label: 'Bug fixes + balance tuning based on real play', done: false },
-    ],
-  },
-  {
-    emoji: '📣',
-    title: 'Phase 2 — Community & Socials',
-    subtitle: 'Build a real audience before launch',
-    timeframe: 'Next',
-    status: 'next',
-    items: [
-      { label: 'Official X (Twitter) account — daily leaderboard shoutouts' },
-      { label: 'Farcaster channel — native to Base ecosystem' },
-      { label: 'Discord/Telegram for tester feedback' },
-      { label: 'Realistic target: 500-1,000 wallets connected pre-mainnet' },
-      { label: 'Submit to Base App featured mini-apps directory' },
+      { label: 'Open testing with active testers', done: true },
+      { label: 'Bug fixes + balance tuning based on real play', done: true },
     ],
   },
   {
     emoji: '⛓',
-    title: 'Phase 3 — Mainnet Launch',
-    subtitle: 'Move from Base Sepolia to Base Mainnet',
-    timeframe: '4-8 weeks after Phase 2',
-    status: 'future',
+    title: 'Phase 2 — Mainnet Launch',
+    subtitle: 'Live now on Base Mainnet',
+    timeframe: 'Live',
+    status: 'live',
     items: [
-      { label: 'Redeploy all 4 contracts to Base Mainnet' },
-      { label: 'Treasury starts collecting real ETH fees' },
-      { label: 'Testnet $CHIP balances + Wrap collections snapshotted' },
-      { label: 'Target: 1,000-3,000 onchain transactions in first month' },
+      { label: 'All 4 contracts deployed, wired, and verified on Base Mainnet', done: true },
+      { label: 'Treasury collecting real ETH fees', done: true },
+      { label: 'Testnet $CHIP balances + Wrap collections carried into the live leaderboard', done: true },
+      { label: 'Onchain 2x collection multiplier — permanent, applies to future serves', done: true },
+    ],
+  },
+  {
+    emoji: '📣',
+    title: 'Phase 3 — Community & Socials',
+    subtitle: 'Build a real audience now that mainnet is live',
+    timeframe: 'Now',
+    status: 'next',
+    items: [
+      { label: 'Official X (Twitter) account — daily leaderboard shoutouts' },
+      { label: 'Farcaster channel — native to Base ecosystem' },
+      { label: 'Discord/Telegram for player feedback' },
+      { label: 'Realistic target: 1,000+ wallets connected on mainnet' },
+      { label: 'Submit to Base App featured mini-apps directory' },
     ],
   },
   {
@@ -61,7 +61,7 @@ const PHASES: Phase[] = [
     status: 'future',
     items: [
       { label: '$CHIP becomes a real, tradeable token' },
-      { label: 'Snapshot rewards based on testnet $CHIP + Wrap collection multiplier' },
+      { label: 'Snapshot rewards based on total $CHIP + Wrap collection multiplier' },
       { label: 'Completionists (20/20 Wraps) receive 2x allocation' },
       { label: 'Liquidity pool on a Base DEX (Aerodrome/Uniswap)' },
       { label: 'Full tokenomics published before TGE date' },
@@ -84,7 +84,7 @@ const PHASES: Phase[] = [
 ]
 
 export function Roadmap() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0)
+  const [openIndex, setOpenIndex] = useState<number | null>(1)
 
   const statusStyle: Record<Phase['status'], React.CSSProperties> = {
     live:   { background: '#27ae60', color: '#fff' },

@@ -39,7 +39,17 @@ A marketing landing page lives at `/welcome` (pop-art British chippy theme, real
 
 ---
 
-## ⛓ Live on Base Sepolia (testnet)
+## ⛓ Live on Base Mainnet
+
+| Contract | Address |
+|---|---|
+| ChipToken (`$CHIP`) | [`0xa840fd34783438dd09B8eA6EA6ad70fF88d25C4E`](https://basescan.org/address/0xa840fd34783438dd09B8eA6EA6ad70fF88d25C4E) |
+| NewspaperWrap (NFT) | [`0x9ab1860fBE07140755C71aa7F990fb6681Fe9B84`](https://basescan.org/address/0x9ab1860fBE07140755C71aa7F990fb6681Fe9B84) |
+| ChipTreasury | [`0x8bf32413417dF502A5E8C7E3576F019cF4c10B22`](https://basescan.org/address/0x8bf32413417dF502A5E8C7E3576F019cF4c10B22) |
+| ChippyChain (game) | [`0xe0683F840949976C0f7304f5AA6B9b9450Ae9c4c`](https://basescan.org/address/0xe0683F840949976C0f7304f5AA6B9b9450Ae9c4c) |
+
+<details>
+<summary>Testnet (Base Sepolia) — historical, v1 contracts</summary>
 
 | Contract | Address |
 |---|---|
@@ -48,18 +58,20 @@ A marketing landing page lives at `/welcome` (pop-art British chippy theme, real
 | ChipTreasury | [`0x331f36834E8446B00054AaD0655077fcF90F7409`](https://sepolia.basescan.org/address/0x331f36834E8446B00054AaD0655077fcF90F7409) |
 | ChippyChain (game) | [`0x2b494475705d6197014f0BD06f909398688bd169`](https://sepolia.basescan.org/address/0x2b494475705d6197014f0BD06f909398688bd169) |
 
+</details>
+
 ---
 
 ## 🪙 Tokenomics
 
-**$CHIP is currently a non-transferable onchain points system** — not a financial instrument, not tradeable, not listed on any exchange. Points are earned by playing. A real, tradeable **$CHIP token (TGE)** is planned post-mainnet (see Roadmap), with allocations based on testnet $CHIP balances and Newspaper Wrap collection progress.
+**$CHIP is currently a non-transferable onchain points system** — not a financial instrument, not tradeable, not listed on any exchange. Points are earned by playing. A real, tradeable **$CHIP token (TGE)** is planned post-launch (see Roadmap), with allocations based on total $CHIP balances (testnet + mainnet combined) and Newspaper Wrap collection progress.
 
 Every transaction sends a small protocol fee to an onchain **Treasury** contract:
 
 | Action | Fee | Destination |
 |---|---|---|
-| SERVE IT (manual) | 0.000004 ETH | Treasury |
-| Withdraw profile $CHIP | 0.000004 ETH | Treasury |
+| SERVE IT (manual) | 0.000005 ETH | Treasury |
+| Withdraw profile $CHIP | 0.000005 ETH | Treasury |
 | Buy Auto Serve | 0.003 ETH (one-time) | Treasury |
 
 All treasury withdrawals are logged onchain with a reason, fully transparent.
@@ -84,7 +96,7 @@ Targets are intentionally modest — built incrementally based on real player fe
 
 - **Smart contracts**: Solidity 0.8.20, OpenZeppelin v5
 - **Frontend**: Next.js 14 (App Router), React, TypeScript
-- **Onchain**: wagmi, viem, Base Sepolia
+- **Onchain**: wagmi, viem, Base Mainnet
 - **Wallet**: Coinbase Wallet (OnchainKit) + MetaMask
 - **Backend**: Supabase (Postgres) — players, serves, wraps, leaderboard
 - **Auto Serve cron**: external cron service hitting `/api/cron` every 10 minutes
@@ -102,7 +114,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000), connect a wallet on **Base Sepolia**, and play.
+Open [http://localhost:3000](http://localhost:3000), connect a wallet on **Base Mainnet**, and play. (Set `NEXT_PUBLIC_CHAIN_ID=84532` in `.env.local` to run against Base Sepolia testnet instead.)
 
 ### Supabase setup
 

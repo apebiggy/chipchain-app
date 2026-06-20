@@ -34,7 +34,7 @@ const FAQS: QA[] = [
   },
   {
     q: '🚀 Is this testnet or real?',
-    a: 'Currently running on Base Sepolia testnet — all contracts are deployed and fully functional, but $CHIP and ETH used have no real value yet. Progress made now (both $CHIP balances and Newspaper Wrap collections) is expected to carry weight toward the mainnet rewards round.',
+    a: 'Chip Chain is live on Base Mainnet — all contracts are deployed, verified, and fully functional with real ETH and real onchain $CHIP. Earlier progress made during the testnet phase (both $CHIP balances and Newspaper Wrap collections) is combined into your live leaderboard total.',
   },
 ]
 
@@ -61,6 +61,9 @@ export function FAQ() {
           )
         })}
       </div>
+      <div style={S.footer}>
+        <a href="/terms" style={S.footerLink}>Terms of Service</a>
+      </div>
     </div>
   )
 }
@@ -83,4 +86,6 @@ const S: Record<string, React.CSSProperties> = {
   answer: {
     padding: '0 14px 14px', fontSize: 12, color: '#666', lineHeight: 1.6,
   },
+  footer: { padding: '12px 14px', textAlign: 'center', borderTop: '1px solid #f0f0f0' },
+  footerLink: { fontSize: 11, color: '#999', textDecoration: 'underline' },
 }
