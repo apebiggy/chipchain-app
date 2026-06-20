@@ -7,7 +7,12 @@ import { CONTRACTS } from '@/lib/contracts'
 
 const isProd = process.env.NEXT_PUBLIC_CHAIN_ID === '8453'
 const ACTIVE_CHAIN = isProd ? base : baseSepolia
-const RPC_URL = isProd ? 'https://mainnet.base.org' : 'https://sepolia.base.org'
+// Dedicated CDP Node RPC (higher rate limits than the free public
+// endpoints, which 429 under repeated cron polling). Falls back to
+// the public endpoint if not configured.
+const RPC_URL = isProd
+  ? (process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org')
+  : (process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org')
 
 const CHIPS_PER_TICK = 100  // 100 CHIP per 10-minute tick = same 14,400/day effective rate
 
