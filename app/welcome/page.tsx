@@ -67,13 +67,13 @@ const ROADMAP_SUMMARY = [
   { emoji: '🍟', title: 'Phase 1 — Testnet', status: 'COMPLETE', color: '#27ae60', text: 'Core loop proven on Base Sepolia — serve, earn $CHIP, collect Wraps, Auto Serve, leaderboard.' },
   { emoji: '⛓', title: 'Phase 2 — Mainnet Launch', status: 'LIVE', color: '#27ae60', text: 'Live now on Base Mainnet — real ETH fees, real onchain $CHIP, testnet progress carried forward.' },
   { emoji: '📣', title: 'Phase 3 — Community', status: 'NOW', color: '#FFD700', text: 'X, Farcaster channel, Discord — building a real audience now that mainnet is live.' },
-  { emoji: '🪙', title: 'Phase 4 — $CHIP TGE', status: 'PLANNED', color: '#eee', text: '$CHIP becomes tradeable. Total $CHIP + Wrap collections snapshotted for rewards.' },
+  { emoji: '🍟', title: 'Phase 4 — $CHIP TGE', status: 'PLANNED', color: '#eee', text: '$CHIP becomes tradeable. Total $CHIP + Wrap collections snapshotted for rewards.' },
   { emoji: '🍔', title: 'Phase 5 — New Restaurants', status: 'PLANNED', color: '#eee', text: 'Taco Truck, Pizza Place, Curry House — shared $CHIP economy across menus.' },
 ]
 
 const FAQ_TEASER = [
   { q: '🚀 Is this testnet or real?', a: 'Live on Base Mainnet — fully functional with real ETH and real onchain $CHIP. Testnet-era progress (both $CHIP and Wraps) is combined into your live leaderboard total.' },
-  { q: '🪙 What is $CHIP?', a: 'Your onchain points balance, earned by serving customers or running Auto Serve. Non-transferable for now — not a tradeable token yet.' },
+  { q: '🍟 What is $CHIP?', a: 'Your onchain points balance, earned by serving customers or running Auto Serve. Non-transferable for now — not a tradeable token yet.' },
   { q: '📰 Do I get Wraps from Auto Serve?', a: 'No — only manual SERVE IT actions mint Newspaper Wraps. Auto Serve earns $CHIP only.' },
   { q: '💰 Where do the fees go?', a: 'Every serve, withdrawal, and Auto Serve purchase sends a small ETH fee to the Treasury contract — fully visible onchain, funding development and future rewards.' },
 ]
