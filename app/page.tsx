@@ -482,8 +482,8 @@ export default function Home() {
               {[
                 { label:'⛓ Onchain $CHIP', value:profile.chipBalance, color:'#e67e22' },
                 { label:'👤 Profile $CHIP', value:profile.profileChip, color:'#0052ff' },
-                { label:'🍟 Served Today',  value:profile.servedToday, color:'#FFD700' },
-                { label:'📊 Total Served',  value:profile.totalServed, color:'#27ae60' },
+                { label:'🍟 Total Served',  value:profile.totalServed, color:'#FFD700' },
+                { label:'⛓ Mainnet Served', value:profile.mainnetServed, color:'#27ae60' },
               ].map(s=>(
                 <div key={s.label} style={{ background:'#f8f8f8', borderRadius:8, padding:12, border:'1.5px solid #eee' }}>
                   <div style={{ fontSize:9, fontWeight:900, color:'#aaa', letterSpacing:2, textTransform:'uppercase' }}>{s.label}</div>

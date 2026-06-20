@@ -9,12 +9,13 @@ export interface PlayerProfile {
   chipBalance:   number
   hasAutoServe:  boolean
   profileChip:   number
-  totalServed:   number
+  mainnetServed: number  // serves on the current mainnet contract only (resets on redeploy)
   totalEarned:   number
   hasMultiplier: boolean
   ethBalance:    string
-  // Offchain (Supabase)
-  servedToday:   number
+  // Offchain (Supabase) — combined testnet + mainnet, matches leaderboard
+  totalServed:   number
+  servedToday:   number  // NOTE: despite the name, this is a lifetime count, not daily — see usePlayerProfile.ts
   basename:      string | null
   // Status
   isLoading:     boolean
@@ -27,6 +28,7 @@ export interface PlayerProfile {
 export function usePlayerProfile(): PlayerProfile {
   const { address, isConnected } = useAccount()
   const [servedToday, setServedToday] = useState(0)
+  const [combinedServed, setCombinedServed] = useState(0)
   const [basename, setBasename] = useState<string | null>(null)
   const [tick, setTick] = useState(0)
 
@@ -62,10 +64,11 @@ export function usePlayerProfile(): PlayerProfile {
           { wallet_address: address, last_seen: new Date().toISOString() },
           { onConflict: 'wallet_address', ignoreDuplicates: false }
         )
-        .select('served_today, basename')
+        .select('served_today, total_served, basename')
         .single()
       if (data) {
         setServedToday(data.served_today ?? 0)
+        setCombinedServed(data.total_served ?? 0)
         setBasename(data.basename ?? null)
       }
     }
@@ -80,7 +83,7 @@ export function usePlayerProfile(): PlayerProfile {
 
   const hasAutoServe  = playerData ? Boolean(playerData[0]) : false
   const profileChip   = playerData ? Number(playerData[1]) : 0
-  const totalServed   = playerData ? Number(playerData[2]) : 0
+  const mainnetServed = playerData ? Number(playerData[2]) : 0
   const totalEarned   = playerData ? Number(playerData[3]) : 0
   const hasMultiplier = playerData ? Boolean(playerData[4]) : false
   const chipBalance   = chipBal    ? Number(chipBal)        : 0
@@ -111,10 +114,11 @@ export function usePlayerProfile(): PlayerProfile {
     chipBalance,
     hasAutoServe,
     profileChip,
-    totalServed,
+    mainnetServed,
     totalEarned,
     hasMultiplier,
     ethBalance: ethBal ? `${parseFloat(ethBal.formatted).toFixed(6)} ETH` : '0 ETH',
+    totalServed: combinedServed,
     servedToday,
     basename,
     isLoading:   pdLoading || chipLoading,
