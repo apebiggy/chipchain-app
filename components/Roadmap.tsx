@@ -54,7 +54,7 @@ const PHASES: Phase[] = [
     ],
   },
   {
-    emoji: '🪙',
+    emoji: '🍟',
     title: 'Phase 4 — $CHIP Token Event (TGE)',
     subtitle: 'Reward early testers and players',
     timeframe: 'After mainnet traction',

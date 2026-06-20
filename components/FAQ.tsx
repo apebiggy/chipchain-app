@@ -5,7 +5,7 @@ interface QA { q: string; a: string }
 
 const FAQS: QA[] = [
   {
-    q: '🪙 What is $CHIP?',
+    q: '🍟 What is $CHIP?',
     a: '$CHIP is your onchain points balance, earned every time you serve a customer or run Auto Serve. It is currently a non-transferable points system — not a tradeable token yet.',
   },
   {

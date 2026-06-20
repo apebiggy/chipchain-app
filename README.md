@@ -62,7 +62,7 @@ A marketing landing page lives at `/welcome` (pop-art British chippy theme, real
 
 ---
 
-## 🪙 Tokenomics
+## 🍟 Tokenomics
 
 **$CHIP is currently a non-transferable onchain points system** — not a financial instrument, not tradeable, not listed on any exchange. Points are earned by playing. A real, tradeable **$CHIP token (TGE)** is planned post-launch (see Roadmap), with allocations based on total $CHIP balances (testnet + mainnet combined) and Newspaper Wrap collection progress.
 
@@ -85,7 +85,7 @@ All treasury withdrawals are logged onchain with a reason, fully transparent.
 | 🍟 **1 — Chip Chain (Testnet)** | ✅ Live | Core game, Auto Serve, Wrap collection, leaderboard + multiplier |
 | 📣 **2 — Community & Socials** | ◐ Next | X, Farcaster, Discord; target 500-1,000 wallets; Base App submission |
 | ⛓ **3 — Mainnet Launch** | ○ Planned | Redeploy contracts, CDP Paymaster, real Treasury fees |
-| 🪙 **4 — $CHIP TGE** | ○ Planned | Snapshot rewards, 2x for Wrap completionists, DEX liquidity |
+| 🍟 **4 — $CHIP TGE** | ○ Planned | Snapshot rewards, 2x for Wrap completionists, DEX liquidity |
 | 🍔 **5 — New Restaurants** | ○ Planned | Taco Truck, Pizza Place, Curry House, Chinese Takeaway |
 
 Targets are intentionally modest — built incrementally based on real player feedback, not hype. Full details available in-app via the 🗺️ Roadmap badge.
