@@ -28,6 +28,8 @@ export const metadata: Metadata = {
     images: ['/og-image.png'],
   },
   other: {
+    // Google Search Console domain verification
+    'google-site-verification': 'YCgzKxH_MigVA7rAx5ieqPK26Cl_oaL2FHlOkHixUmY',
     // Mini App embed metadata — current standard (fc:miniapp replaces
     // the older fc:frame tags). Makes this page shareable as a rich,
     // interactive card in Base App / Farcaster feeds.
