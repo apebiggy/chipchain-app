@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
 import { baseAccount, metaMask } from 'wagmi/connectors'
 import { usePlayerProfile } from '@/hooks/usePlayerProfile'
@@ -266,7 +267,9 @@ export default function Home() {
             </div>
           </div>
           <div className="cc-sign-box">
-            <div className="cc-sign-main">CHIP CHAIN</div>
+            <Link href="/" className="cc-sign-main" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+              CHIP CHAIN
+            </Link>
             <div className="cc-sign-sub">🍟 The Great British Fry-Off · Live on Base</div>
           </div>
         </div>
