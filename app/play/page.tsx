@@ -55,6 +55,36 @@ export default function Home() {
   const { buyAutoServe, withdrawProfile, buyStatus, withdrawStatus, error: autoServeError } = useAutoServe()
   const { serveFee, autoServeFee } = useFees()
 
+  // ── Base App / Coinbase Wallet in-app browser detection ───────
+  // Streamlines the connect screen when opened from inside Base App
+  // or the Coinbase Wallet app: skip the MetaMask option (irrelevant
+  // there) and auto-connect silently if a wallet is already
+  // authorized, so returning players don't need to tap anything.
+  const [isInWalletBrowser, setIsInWalletBrowser] = useState(false)
+  const [autoConnectAttempted, setAutoConnectAttempted] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const eth = (window as any).ethereum
+    const ua = navigator.userAgent || ''
+    const detected = Boolean(eth?.isCoinbaseWallet) || /CoinbaseWallet|Base\/\d/i.test(ua)
+    setIsInWalletBrowser(detected)
+
+    if (!detected || isConnected || autoConnectAttempted) return
+    setAutoConnectAttempted(true)
+
+    // Non-prompting check for an already-authorized account — only
+    // proceeds if the wallet has previously granted access, never
+    // triggers an unexpected popup.
+    eth?.request?.({ method: 'eth_accounts' })
+      .then((accounts: string[]) => {
+        if (accounts && accounts.length > 0) {
+          connect({ connector: coinbaseWallet({ appName: 'Chip Chain' }) })
+        }
+      })
+      .catch(() => {})
+  }, [isConnected, autoConnectAttempted, connect])
+
   // Small flat buffer on top of the fee itself to cover gas (Base gas is tiny,
   // but this avoids edge-case "insufficient funds" reverts from gas estimation).
   const GAS_BUFFER = BigInt('2000000000000') // 0.000002 ETH
@@ -161,12 +191,14 @@ export default function Home() {
         <p style={{ color:'#fff', fontWeight:800, marginBottom:28, fontSize:16 }}>The Great British Fry-Off · Live on Base</p>
         <button onClick={() => connect({ connector: coinbaseWallet({ appName:'Chip Chain' }) })}
           style={{ background:'#0052ff', color:'#fff', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', marginBottom:12, boxShadow:'5px 5px 0 #003dbf', width:'100%', maxWidth:320 }}>
-          Connect Base Wallet
+          {isInWalletBrowser ? 'Connect Wallet' : 'Connect Base Wallet'}
         </button>
-        <button onClick={() => connect({ connector: metaMask() })}
-          style={{ background:'#fff', color:'#111', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', boxShadow:'5px 5px 0 #111', width:'100%', maxWidth:320 }}>
-          🦊 Connect MetaMask
-        </button>
+        {!isInWalletBrowser && (
+          <button onClick={() => connect({ connector: metaMask() })}
+            style={{ background:'#fff', color:'#111', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', boxShadow:'5px 5px 0 #111', width:'100%', maxWidth:320 }}>
+            🦊 Connect MetaMask
+          </button>
+        )}
         <p style={{ color:'rgba(255,255,255,.6)', fontSize:12, marginTop:12 }}>Base Mainnet · Real ETH required for fees</p>
       </div>
     )
