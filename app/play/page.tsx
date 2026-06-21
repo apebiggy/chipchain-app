@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
-import { coinbaseWallet, metaMask } from 'wagmi/connectors'
+import { baseAccount, metaMask } from 'wagmi/connectors'
 import { usePlayerProfile } from '@/hooks/usePlayerProfile'
 import { useServe } from '@/hooks/useServe'
 import { useAutoServe } from '@/hooks/useAutoServe'
@@ -79,7 +79,7 @@ export default function Home() {
     eth?.request?.({ method: 'eth_accounts' })
       .then((accounts: string[]) => {
         if (accounts && accounts.length > 0) {
-          connect({ connector: coinbaseWallet({ appName: 'Chip Chain' }) })
+          connect({ connector: baseAccount({ appName: 'Chip Chain' }) })
         }
       })
       .catch(() => {})
@@ -189,7 +189,7 @@ export default function Home() {
         <img src="/branding/logo-full.png" alt="Chip Chain" style={{ width: 160, height: 'auto', marginBottom: 16, filter: 'drop-shadow(3px 4px 0 rgba(0,0,0,0.3))' }} />
         <h1 style={{ fontFamily:'serif', fontSize:48, color:'#cc1111', textShadow:'3px 3px 0 #111', marginBottom:8, letterSpacing:4 }}>CHIP CHAIN</h1>
         <p style={{ color:'#fff', fontWeight:800, marginBottom:28, fontSize:16 }}>The Great British Fry-Off · Live on Base</p>
-        <button onClick={() => connect({ connector: coinbaseWallet({ appName:'Chip Chain' }) })}
+        <button onClick={() => connect({ connector: baseAccount({ appName:'Chip Chain' }) })}
           style={{ background:'#0052ff', color:'#fff', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', marginBottom:12, boxShadow:'5px 5px 0 #003dbf', width:'100%', maxWidth:320 }}>
           {isInWalletBrowser ? 'Connect Wallet' : 'Connect Base Wallet'}
         </button>

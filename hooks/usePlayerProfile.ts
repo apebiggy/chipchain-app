@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useAccount, useReadContract, useBalance } from 'wagmi'
+import { formatEther } from 'viem'
 import { supabase } from '@/lib/supabase'
 import { CONTRACTS, GAME_ABI, CHIP_ABI } from '@/lib/contracts'
 
@@ -118,7 +119,7 @@ export function usePlayerProfile(): PlayerProfile {
     mainnetServed,
     totalEarned,
     hasMultiplier,
-    ethBalance: ethBal ? `${parseFloat(ethBal.formatted).toFixed(6)} ETH` : '0 ETH',
+    ethBalance: ethBal ? `${parseFloat(formatEther(ethBal.value)).toFixed(6)} ETH` : '0 ETH',
     ethBalanceWei: ethBal ? ethBal.value : BigInt(0),
     totalServed: combinedServed,
     servedToday,

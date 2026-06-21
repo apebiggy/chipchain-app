@@ -1,6 +1,6 @@
 import { http, createConfig } from 'wagmi'
 import { baseSepolia, base } from 'wagmi/chains'
-import { coinbaseWallet, metaMask } from 'wagmi/connectors'
+import { baseAccount, metaMask } from 'wagmi/connectors'
 
 const isProd = process.env.NEXT_PUBLIC_CHAIN_ID === '8453'
 
@@ -13,9 +13,13 @@ const BASE_SEPOLIA_RPC = process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || 'https:
 export const config = createConfig({
   chains: isProd ? [base] : [baseSepolia],
   connectors: [
-    coinbaseWallet({
+    // Base Account connector — replaces the legacy coinbaseWallet
+    // connector, which showed a "Coinbase"-branded popup even after
+    // Coinbase Wallet's rebrand to Base App. This one matches current
+    // Base branding throughout the connection flow.
+    baseAccount({
       appName: 'Chip Chain',
-      appLogoUrl: `${process.env.NEXT_PUBLIC_URL || 'https://v0-chipchain.vercel.app'}/branding/icon-1024.png`,
+      appLogoUrl: `${process.env.NEXT_PUBLIC_URL || 'https://chipchain.shop'}/branding/icon-1024.png`,
     }),
     metaMask(),
   ],
