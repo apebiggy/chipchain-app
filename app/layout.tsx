@@ -55,8 +55,33 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: 'Chip Chain',
+    alternateName: 'Chip Chain — The Great British Fry-Off',
+    description: 'Serve fish & chips, earn $CHIP onchain, collect Newspaper Wrap NFTs, and climb the leaderboard. Live on Base Mainnet.',
+    url: process.env.NEXT_PUBLIC_URL || 'https://chipchain.shop',
+    image: `${process.env.NEXT_PUBLIC_URL || 'https://chipchain.shop'}/og-image.png`,
+    applicationCategory: 'Game',
+    operatingSystem: 'Web',
+    genre: ['Simulation', 'Onchain Game'],
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+      description: 'Free to play, small ETH network fees apply per action',
+    },
+  }
+
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body>
         <Providers>
           {children}
