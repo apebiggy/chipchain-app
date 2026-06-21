@@ -36,14 +36,15 @@ export async function PATCH(req: NextRequest) {
     }
 
     if (action === 'clear_profile_chip') {
-      // Fetch current profile_chip so we can preserve it in the leaderboard total
-      const { data: playerRow } = await supabaseAdmin
-        .from('players')
-        .select('profile_chip')
-        .eq('wallet_address', wallet)
-        .single()
-
-      const withdrawnAmount = playerRow?.profile_chip ?? 0
+      // Use the amount passed in from the client, which reads it live from
+      // the onchain getPlayerData() call right before withdrawing — this
+      // is the source of truth. We deliberately do NOT trust Supabase's
+      // own profile_chip column here: it's a separate, independently
+      // maintained copy that can drift out of sync with the real onchain
+      // balance (e.g. after a manual data reset, or any cron hiccup), and
+      // trusting a stale/wrong value here would permanently under- or
+      // over-credit the leaderboard for this withdrawal.
+      const withdrawnAmount = Number(body.onchainAmount ?? 0)
 
       if (withdrawnAmount > 0) {
         // Record the withdrawal as a "serve" so onchain_chip stays in sync

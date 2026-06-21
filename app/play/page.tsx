@@ -381,7 +381,7 @@ export default function Home() {
               style={{ flex:1, minHeight:48, background:profile.hasAutoServe?'#27ae60':'#fff', color:profile.hasAutoServe?'#fff':'#111', border:'3px solid #111', borderRadius:8, fontWeight:900, fontSize:13, cursor:'pointer', boxShadow:'3px 3px 0 #111' }}>
               {buyStatus==='signing'?'⏳ Signing...':buyStatus==='pending'?'⏳ Confirming...':profile.hasAutoServe?'🤖 Autoserve ON':'🤖 Autoserve'}
             </button>
-            <button onClick={() => withdrawProfile()}
+            <button onClick={() => withdrawProfile(profile.profileChip)}
               disabled={profile.profileChip===0||withdrawStatus==='signing'||withdrawStatus==='pending'}
               style={{ flex:1, minHeight:48, background:'#fff', color:'#0052ff', border:'3px solid #0052ff', borderRadius:8, fontWeight:900, fontSize:13, cursor:'pointer', boxShadow:'3px 3px 0 #0052ff', opacity:profile.profileChip===0?0.5:1 }}>
               {withdrawStatus==='signing'?'⏳ Signing...':withdrawStatus==='pending'?'⏳ Confirming...':'⬇️ Withdraw'}
@@ -644,7 +644,7 @@ export default function Home() {
               Wallet: {address}
             </div>
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-              <button onClick={()=>withdrawProfile()}
+              <button onClick={()=>withdrawProfile(profile.profileChip)}
                 disabled={profile.profileChip===0||withdrawStatus==='signing'||withdrawStatus==='pending'}
                 style={{ minHeight:48, background:'#fff', color:'#0052ff', border:'3px solid #0052ff', borderRadius:8, fontWeight:900, fontSize:15, cursor:'pointer', boxShadow:'3px 3px 0 #0052ff', opacity:profile.profileChip===0?0.5:1 }}>
                 {withdrawStatus==='signing'?'⏳ Signing...':withdrawStatus==='pending'?'⏳ Confirming...':'⬇️ WITHDRAW PROFILE $CHIP ONCHAIN'}

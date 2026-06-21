@@ -70,7 +70,7 @@ export function useAutoServe() {
     }
   }
 
-  async function withdrawProfile() {
+  async function withdrawProfile(onchainAmount: number) {
     try {
       setWithdrawStatus('signing')
       setError(null)
@@ -85,14 +85,17 @@ export function useAutoServe() {
       setWithdrawHash(hash)
       setWithdrawStatus('pending')
 
-      // Clear profile balance in Supabase (and record withdrawal for leaderboard sync)
+      // Clear profile balance in Supabase (and record withdrawal for leaderboard
+      // sync) — pass the live onchain amount read just before this call, not
+      // whatever Supabase's own profile_chip column currently holds, since
+      // those two can drift out of sync.
       await fetch('/api/profile', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'x-wallet-address': address ?? '',
         },
-        body: JSON.stringify({ action: 'clear_profile_chip', txHash: hash }),
+        body: JSON.stringify({ action: 'clear_profile_chip', txHash: hash, onchainAmount }),
       })
 
       setWithdrawStatus('confirmed')
