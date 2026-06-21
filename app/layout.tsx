@@ -28,11 +28,23 @@ export const metadata: Metadata = {
     images: ['/og-image.png'],
   },
   other: {
-    // Farcaster frame manifest
-    'fc:frame': 'vNext',
-    'fc:frame:image': `${process.env.NEXT_PUBLIC_URL}/og-image.png`,
-    'fc:frame:button:1': '🍟 Play Chip Chain',
-    'fc:frame:post_url': `${process.env.NEXT_PUBLIC_URL}/api/frame`,
+    // Mini App embed metadata — current standard (fc:miniapp replaces
+    // the older fc:frame tags). Makes this page shareable as a rich,
+    // interactive card in Base App / Farcaster feeds.
+    'fc:miniapp': JSON.stringify({
+      version: '1',
+      imageUrl: `${process.env.NEXT_PUBLIC_URL || 'https://chipchain.shop'}/branding/embed-image-3x2.png`,
+      button: {
+        title: 'Play Chip Chain',
+        action: {
+          type: 'launch_frame',
+          name: 'Chip Chain',
+          url: `${process.env.NEXT_PUBLIC_URL || 'https://chipchain.shop'}/play`,
+          splashImageUrl: `${process.env.NEXT_PUBLIC_URL || 'https://chipchain.shop'}/branding/splash-200.png`,
+          splashBackgroundColor: '#1a90d8',
+        },
+      },
+    }),
     // Base Builder Code domain verification
     'base:app_id': '6a2eb9d2894040438b8e6449',
   },
