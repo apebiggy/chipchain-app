@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-const BASE_URL = process.env.NEXT_PUBLIC_URL || 'https://v0-chipchain.vercel.app'
+const BASE_URL = process.env.NEXT_PUBLIC_URL || 'https://chipchain.shop'
 
 interface Props {
   searchParams: { chip?: string; served?: string; multiplier?: string; t?: string }
@@ -42,7 +42,7 @@ export default function FlexPage({ searchParams }: Props) {
       <p style={{ color: '#FFD700', fontWeight: 800, marginBottom: 24, fontSize: 15 }}>
         {served} customers served{multiplier ? ' · 2x multiplier active 🔥' : ''}
       </p>
-      <Link href="/" style={{
+      <Link href="/play" style={{
         background: '#FFD700', color: '#111', border: '3px solid #111', borderRadius: 10,
         padding: '12px 28px', fontSize: 16, fontWeight: 900, textDecoration: 'none',
         boxShadow: '4px 4px 0 #111',

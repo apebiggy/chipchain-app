@@ -3,9 +3,9 @@ import { Providers } from './providers'
 import './globals.css'
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_URL || 'https://v0-chipchain.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_URL || 'https://chipchain.shop'),
   title: 'Chip Chain — The Great British Fry-Off',
-  description: 'Serve fish & chips, earn $CHIP onchain, and collect Newspaper Wrap NFTs in this British chippy game built on Base.',
+  description: 'Serve fish & chips, earn $CHIP onchain, collect Newspaper Wrap NFTs, and climb the leaderboard. Live on Base Mainnet.',
   keywords: ['Chip Chain', 'Base', 'Base Mainnet', 'onchain game', 'fish and chips', 'crypto game', 'NFT', '$CHIP', 'web3 game'],
   robots: {
     index: true,
@@ -17,14 +17,14 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Chip Chain — The Great British Fry-Off',
-    description: 'Serve fish & chips, earn $CHIP onchain, and collect Newspaper Wrap NFTs in this British chippy game built on Base.',
+    description: 'Serve fish & chips, earn $CHIP onchain, collect Newspaper Wrap NFTs, and climb the leaderboard. Live on Base Mainnet.',
     images: ['/og-image.png'],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Chip Chain — The Great British Fry-Off',
-    description: 'Serve fish & chips, earn $CHIP onchain, and collect Newspaper Wrap NFTs in this British chippy game built on Base.',
+    description: 'Serve fish & chips, earn $CHIP onchain, collect Newspaper Wrap NFTs, and climb the leaderboard. Live on Base Mainnet.',
     images: ['/og-image.png'],
   },
   other: {

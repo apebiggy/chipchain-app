@@ -1,697 +1,338 @@
 'use client'
-import { useEffect, useState } from 'react'
-import { useAccount, useConnect, useDisconnect } from 'wagmi'
-import { coinbaseWallet, metaMask } from 'wagmi/connectors'
-import { usePlayerProfile } from '@/hooks/usePlayerProfile'
-import { useServe } from '@/hooks/useServe'
-import { useAutoServe } from '@/hooks/useAutoServe'
-import { useFees } from '@/hooks/useFees'
-import { Leaderboard } from '@/components/Leaderboard'
-import { WrapGallery } from '@/components/WrapGallery'
-import { FAQ } from '@/components/FAQ'
-import { Roadmap } from '@/components/Roadmap'
+import Link from 'next/link'
 
-function formatEth(wei: bigint): string {
-  const eth = Number(wei) / 1e18
-  return eth.toFixed(6).replace(/0+$/, '').replace(/\.$/, '')
-}
+// ─────────────────────────────────────────────────────────────
+// CHIP CHAIN — Landing Page ("/welcome")
+// Pop-art British chippy aesthetic, real game mechanics/copy.
+// "Play Now" buttons link to "/" (the live game).
+// ─────────────────────────────────────────────────────────────
 
-const CUSTOMERS = [
-  { e:'👴', n:'Barry',  q:'"Same as usual, love"',           o:['fish','chips','salt','ketchup','coke'],          tip:25 },
-  { e:'👵', n:'Doreen', q:'"Not too much vinegar!"',          o:['fish','chips','mayo','oj'],                      tip:28 },
-  { e:'🧔', n:'Gary',   q:'"Absolutely starving mate"',       o:['chips','wedges','ketchup','hpsauce','lager'],    tip:28 },
-  { e:'💁', n:'Sharon', q:'"Is the coleslaw fresh today?"',   o:['fish','slaw','mayo','oj'],                       tip:32 },
-  { e:'👷', n:'Trevor', q:'"Large cod, extra chips cheers"',  o:['fish','chips','wedges','salt','hpsauce','lager'],tip:42 },
-  { e:'🕵️', n:'Colin',  q:'"Just chips please pal"',          o:['chips','salt','ketchup'],                       tip:15 },
-  { e:'👩‍💼', n:'Mandy', q:'"No salt — watching my sodium"',   o:['fish','chips','mayo','slaw','oj'],               tip:42 },
-  { e:'🎅', n:'Terry',  q:'"Merry Christmas! Large order!"',  o:['fish','chips','wedges','ketchup','mayo','lager'],tip:60 },
-  { e:'🧑', n:'Kyle',   q:'"Extra salt yeah? Cheers"',        o:['chips','wedges','salt','hpsauce','lager'],       tip:22 },
-  { e:'👩', n:'Bev',    q:'"Whatever\'s hottest!"',            o:['fish','slaw','chips','ketchup','oj'],            tip:30 },
+const TICKER_ITEMS = [
+  '⛓ $CHIP MINTED ONCHAIN ON EVERY SERVE',
+  '📰 20 NEWSPAPER WRAPS TO COLLECT',
+  '⭐ COMPLETE THE SET FOR A 2x MULTIPLIER',
+  '🤖 AUTO SERVE EARNS 10 $CHIP/MIN PASSIVELY',
+  '🏆 CLIMB THE LIVE TOP-50 LEADERBOARD',
+  '⛓ LIVE ON BASE MAINNET — REAL $CHIP, REAL ONCHAIN',
+  '💰 ALL FEES VISIBLE ONCHAIN VIA TREASURY',
 ]
 
-const MENU = [
-  { id:'fish',    nm:'Fish',         ico:'🐟' },
-  { id:'chips',   nm:'Chips',        ico:'🍟' },
-  { id:'wedges',  nm:'Wedges',       ico:'🥔' },
-  { id:'slaw',    nm:'Coleslaw',     ico:'🥗' },
-  { id:'mayo',    nm:'Mayo',         ico:'🥛' },
-  { id:'ketchup', nm:'Ketchup',      ico:'🍅' },
-  { id:'hpsauce', nm:'HP Sauce',     ico:'🟤' },
-  { id:'salt',    nm:'Salt',         ico:'🧂' },
-  { id:'pepper',  nm:'Pepper',       ico:'⬛' },
-  { id:'coke',    nm:'Coke',         ico:'🥤' },
-  { id:'oj',      nm:'OJ',           ico:'🍊' },
-  { id:'lager',   nm:'Pint of Lager',ico:'🍺' },
+const FEATURES = [
+  {
+    emoji: '🐟',
+    title: 'Serve Real Customers',
+    text: 'Each customer has a unique order and tip. Tap menu items — fish, chips, sauces, drinks — to match what they want, then SERVE IT.',
+  },
+  {
+    emoji: '⛓',
+    title: '$CHIP Minted Onchain',
+    text: 'Every manual serve mints $CHIP points directly to your wallet — permanent, visible on Basescan, no middleman.',
+  },
+  {
+    emoji: '📰',
+    title: 'Newspaper Wrap NFTs',
+    text: '10 tabloid headlines × normal/rare = 20 collectible wraps. Each manual serve mints one, with a 10% chance of a ⭐ Rare edition.',
+  },
+  {
+    emoji: '⭐',
+    title: 'Collect Them All → 2x',
+    text: 'Complete your 20/20 Wrap collection to permanently double the $CHIP minted from every future SERVE IT — applied automatically, onchain.',
+  },
+  {
+    emoji: '🤖',
+    title: 'Auto Serve — Passive $CHIP',
+    text: 'Pay a one-time 0.003 ETH fee to earn 10 $CHIP/minute automatically into your profile balance. Withdraw to onchain $CHIP anytime.',
+  },
+  {
+    emoji: '🏆',
+    title: 'Live Top-50 Leaderboard',
+    text: 'Ranked by total $CHIP (onchain + profile). Updates every 30 seconds — see exactly where you stand.',
+  },
 ]
 
-type Tab = 'play' | 'leaderboard' | 'profile'
+const STEPS = [
+  { n: '1', emoji: '🔌', title: 'Connect Wallet', text: 'Connect on Base Mainnet — MetaMask or Coinbase Wallet.' },
+  { n: '2', emoji: '🔔', title: 'Get a Customer', text: 'Press "Get Next Customer" to see their order and tip ($CHIP reward).' },
+  { n: '3', emoji: '🍟', title: 'Build & Serve', text: 'Tap the right menu items, then SERVE IT — a real Base transaction.' },
+  { n: '4', emoji: '🎉', title: 'Earn & Collect', text: '$CHIP mints to your wallet + a random Newspaper Wrap NFT. Repeat, climb the board.' },
+]
 
-export default function Home() {
-  const { isConnected, address } = useAccount()
-  const { connect }    = useConnect()
-  const { disconnect } = useDisconnect()
-  const profile = usePlayerProfile()
-  const { serve, status: serveStatus } = useServe()
-  const { buyAutoServe, withdrawProfile, buyStatus, withdrawStatus, error: autoServeError } = useAutoServe()
-  const { serveFee, autoServeFee } = useFees()
+const FEES = [
+  { action: 'SERVE IT (manual)', fee: '0.000005 ETH', result: 'Mints $CHIP + Newspaper Wrap NFT' },
+  { action: 'Withdraw Profile $CHIP', fee: '0.000005 ETH', result: 'Converts Auto Serve balance to onchain $CHIP' },
+  { action: 'Activate Auto Serve', fee: '0.003 ETH (one-time)', result: 'Unlocks 10 $CHIP/min passive earning' },
+]
 
-  // Small flat buffer on top of the fee itself to cover gas (Base gas is tiny,
-  // but this avoids edge-case "insufficient funds" reverts from gas estimation).
-  const GAS_BUFFER = BigInt('2000000000000') // 0.000002 ETH
-  const canAffordServe     = profile.ethBalanceWei >= serveFee + GAS_BUFFER
-  const canAffordAutoServe = profile.ethBalanceWei >= autoServeFee + GAS_BUFFER
+const ROADMAP_SUMMARY = [
+  { emoji: '🍟', title: 'Phase 1 — Testnet', status: 'COMPLETE', color: '#27ae60', text: 'Core loop proven on Base Sepolia — serve, earn $CHIP, collect Wraps, Auto Serve, leaderboard.' },
+  { emoji: '⛓', title: 'Phase 2 — Mainnet Launch', status: 'LIVE', color: '#27ae60', text: 'Live now on Base Mainnet — real ETH fees, real onchain $CHIP, testnet progress carried forward.' },
+  { emoji: '📣', title: 'Phase 3 — Community', status: 'NOW', color: '#FFD700', text: 'X, Farcaster channel, Discord — building a real audience now that mainnet is live.' },
+  { emoji: '🍟', title: 'Phase 4 — $CHIP TGE', status: 'PLANNED', color: '#eee', text: '$CHIP becomes tradeable. Total $CHIP + Wrap collections snapshotted for rewards.' },
+  { emoji: '🍔', title: 'Phase 5 — New Restaurants', status: 'PLANNED', color: '#eee', text: 'Taco Truck, Pizza Place, Curry House — shared $CHIP economy across menus.' },
+]
 
-  const [activeTab,   setActiveTab]   = useState<Tab>('play')
-  const [customer,    setCustomer]    = useState<typeof CUSTOMERS[0] | null>(null)
-  const [tray,        setTray]        = useState<string[]>([])
-  const [queue,       setQueue]       = useState<typeof CUSTOMERS>([])
-  const [timerLeft,   setTimerLeft]   = useState(0)
-  const [serving,     setServing]     = useState(false)
-  const [showFaq,     setShowFaq]     = useState(false)
-  const [showRoadmap, setShowRoadmap] = useState(false)
-  const [step,        setStep]        = useState(1)
-  const [lastMsg,     setLastMsg]     = useState('')
+const FAQ_TEASER = [
+  { q: '🚀 Is this testnet or real?', a: 'Live on Base Mainnet — fully functional with real ETH and real onchain $CHIP. Testnet-era progress (both $CHIP and Wraps) is combined into your live leaderboard total.' },
+  { q: '🍟 What is $CHIP?', a: 'Your onchain points balance, earned by serving customers or running Auto Serve. Non-transferable for now — not a tradeable token yet.' },
+  { q: '📰 Do I get Wraps from Auto Serve?', a: 'No — only manual SERVE IT actions mint Newspaper Wraps. Auto Serve earns $CHIP only.' },
+  { q: '💰 Where do the fees go?', a: 'Every serve, withdrawal, and Auto Serve purchase sends a small ETH fee to the Treasury contract — fully visible onchain, funding development and future rewards.' },
+]
 
-  useEffect(() => {
-    setQueue([...CUSTOMERS].sort(() => Math.random() - 0.5).slice(0, 3))
-  }, [])
-
-  useEffect(() => {
-    if (!customer || timerLeft <= 0 || serving) return
-    const t = setInterval(() => {
-      setTimerLeft(v => {
-        if (v <= 1) {
-          setCustomer(null); setTray([]); setLastMsg('Customer walked out! 😤')
-          return 0
-        }
-        return v - 1
-      })
-    }, 1000)
-    return () => clearInterval(t)
-  }, [customer, timerLeft, serving])
-
-  useEffect(() => {
-    if (!autoServeError) return
-    if (autoServeError.includes('insufficient funds') || autoServeError.includes('exceeds the balance')) {
-      setLastMsg('⚠️ Insufficient ETH balance for this transaction')
-    } else if (autoServeError.includes('User rejected') || autoServeError.includes('User denied')) {
-      setLastMsg('Transaction cancelled')
-    } else {
-      setLastMsg('Transaction cancelled or failed')
-    }
-  }, [autoServeError])
-
-  function getNextCustomer() {
-    const q = queue.length ? queue : [...CUSTOMERS].sort(() => Math.random() - 0.5)
-    setCustomer(q[0])
-    setQueue(q.slice(1))
-    setTray([])
-    setTimerLeft(40)
-    setStep(2)
-    setLastMsg('')
-    setServing(false)
-  }
-
-  function addItem(id: string) { if (customer) setTray(t => [...t, id]) }
-  function removeItem(idx: number) { setTray(t => t.filter((_, i) => i !== idx)) }
-
-  const orderReady = customer
-    ? JSON.stringify([...tray].sort()) === JSON.stringify([...customer.o].sort())
-    : false
-
-  async function handleServe() {
-    if (!customer || !address || !orderReady) return
-    if (!canAffordServe) {
-      setLastMsg(`⚠️ Insufficient ETH balance — you need at least ${formatEth(serveFee + GAS_BUFFER)} ETH to serve`)
-      return
-    }
-    const tip = Math.min(customer.tip, 100)
-    setServing(true)
-    try {
-      await serve(tip, address)
-      const earned = profile.hasMultiplier ? tip * 2 : tip
-      setLastMsg(`⛓ +${earned} $CHIP minted onchain!${profile.hasMultiplier ? ' (2x)' : ''}`)
-      setCustomer(null); setTray([]); setStep(1); setTimerLeft(0)
-      profile.refetch()
-      setQueue(prev => {
-        const extra = [...CUSTOMERS].sort(() => Math.random() - 0.5)[0]
-        return [...prev, extra]
-      })
-    } catch (err) {
-      console.error('Serve failed:', err)
-      const msg = String(err)
-      if (msg.includes('insufficient funds') || msg.includes('exceeds the balance')) {
-        setLastMsg(`⚠️ Insufficient ETH balance — you need at least ${formatEth(serveFee + GAS_BUFFER)} ETH to serve`)
-      } else if (msg.includes('User rejected') || msg.includes('User denied')) {
-        setLastMsg('Transaction cancelled')
-      } else {
-        setLastMsg('Transaction cancelled or failed')
-      }
-    } finally {
-      setServing(false)
-    }
-  }
-
-  // ── Wallet connect screen ────────────────────────────────────
-  if (!isConnected) {
-    return (
-      <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', background:'#1a90d8', padding:24, textAlign:'center', fontFamily:'Nunito,sans-serif' }}>
-        <img src="/branding/logo-full.png" alt="Chip Chain" style={{ width: 160, height: 'auto', marginBottom: 16, filter: 'drop-shadow(3px 4px 0 rgba(0,0,0,0.3))' }} />
-        <h1 style={{ fontFamily:'serif', fontSize:48, color:'#cc1111', textShadow:'3px 3px 0 #111', marginBottom:8, letterSpacing:4 }}>CHIP CHAIN</h1>
-        <p style={{ color:'#fff', fontWeight:800, marginBottom:28, fontSize:16 }}>The Great British Fry-Off · Live on Base</p>
-        <button onClick={() => connect({ connector: coinbaseWallet({ appName:'Chip Chain' }) })}
-          style={{ background:'#0052ff', color:'#fff', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', marginBottom:12, boxShadow:'5px 5px 0 #003dbf', width:'100%', maxWidth:320 }}>
-          Connect Base Wallet
-        </button>
-        <button onClick={() => connect({ connector: metaMask() })}
-          style={{ background:'#fff', color:'#111', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', boxShadow:'5px 5px 0 #111', width:'100%', maxWidth:320 }}>
-          🦊 Connect MetaMask
-        </button>
-        <p style={{ color:'rgba(255,255,255,.6)', fontSize:12, marginTop:12 }}>Base Mainnet · Real ETH required for fees</p>
-      </div>
-    )
-  }
-
-  // ── Main app ─────────────────────────────────────────────────
+export default function WelcomePage() {
   return (
-    <div style={{ maxWidth:860, margin:'0 auto', padding:16, fontFamily:'Nunito,sans-serif', paddingBottom:20 }}>
-
-      {/* Header banner — elaborate shop illustration */}
+    <div style={S.page}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@500;600;700;900&family=Nunito:wght@400;700;800;900&display=swap');
 
-        .cc-sky{
-          background:#1a90d8;
-          background-image:radial-gradient(circle,rgba(255,255,255,0.18) 1.5px,transparent 1.5px);
-          background-size:10px 10px;
-          padding:10px 10px 0;
+        .cc-halftone {
+          background-image: radial-gradient(rgba(0,0,0,0.06) 1.4px, transparent 1.4px);
+          background-size: 14px 14px;
         }
-        .cc-flags-row{display:flex;justify-content:space-between;align-items:flex-end;padding:0 18px;position:relative;z-index:4}
-        .cc-flag-unit{display:flex;flex-direction:column;align-items:center}
-        .cc-flag-pole{width:3px;height:32px;background:#555;border-radius:2px 2px 0 0}
-        .cc-flag-cloth{width:34px;height:22px;line-height:1;margin-bottom:2px;border:1px solid #111;box-shadow:1px 1px 0 rgba(0,0,0,0.3);transform:rotate(-2deg);display:block}
-        .cc-logo-center{position:relative;z-index:5;display:flex;align-items:flex-end;justify-content:center;margin-bottom:-10px}
-        .cc-shop-logo{width:110px;height:auto;filter:drop-shadow(3px 4px 0 rgba(0,0,0,0.35));animation:cc-logobob 3s ease-in-out infinite;position:relative;z-index:5}
-        @keyframes cc-logobob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-6px) rotate(1deg)}}
-
-        .cc-sign-box{background:#FFD700;border:4px solid #111;border-bottom:0;border-radius:6px 6px 0 0;padding:8px 16px 6px;text-align:center}
-        .cc-sign-main{font-family:'Bangers',cursive;font-size:40px;color:#cc1111;-webkit-text-stroke:2px #111;letter-spacing:3px;line-height:1;text-shadow:3px 3px 0 #111}
-        .cc-sign-sub{font-size:10px;color:#8a5f00;font-weight:900;letter-spacing:3px;text-transform:uppercase;margin-top:3px}
-
-        .cc-awning{height:30px;border:4px solid #111;border-top:0;border-radius:0 0 8px 8px;background:repeating-linear-gradient(90deg,#1757a8 0,#1757a8 24px,#fff 24px,#fff 48px)}
-
-        @media (max-width:480px){
-          .cc-sign-main{font-size:30px}
-          .cc-shop-logo{width:85px}
+        .cc-hard {
+          border: 3px solid #111;
+          box-shadow: 5px 5px 0 #111;
+        }
+        .cc-hard-sm {
+          border: 2.5px solid #111;
+          box-shadow: 3px 3px 0 #111;
+        }
+        @keyframes cc-ticker {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+        .cc-ticker-track {
+          display: flex;
+          width: max-content;
+          animation: cc-ticker 32s linear infinite;
+        }
+        @media (max-width: 720px) {
+          .cc-grid-2 { grid-template-columns: 1fr !important; }
+          .cc-grid-3 { grid-template-columns: 1fr !important; }
+          .cc-hero-title { font-size: 52px !important; }
         }
       `}</style>
 
-      <div style={{ borderRadius: 12, overflow: 'hidden', marginBottom: 14 }}>
-        <div className="cc-sky">
-          <div className="cc-flags-row">
-            <div className="cc-flag-unit">
-              <svg className="cc-flag-cloth" viewBox="0 0 60 36" xmlns="http://www.w3.org/2000/svg">
-                <rect width="60" height="36" fill="#00247d"/>
-                <path d="M0,0 L60,36 M60,0 L0,36" stroke="#fff" strokeWidth="7"/>
-                <path d="M0,0 L60,36 M60,0 L0,36" stroke="#cf142b" strokeWidth="3"/>
-                <path d="M30,0 V36 M0,18 H60" stroke="#fff" strokeWidth="11"/>
-                <path d="M30,0 V36 M0,18 H60" stroke="#cf142b" strokeWidth="6"/>
-              </svg>
-              <div className="cc-flag-pole" />
-            </div>
-            <div className="cc-logo-center">
-              <img src="/branding/logo-full.png" className="cc-shop-logo" alt="Chip Chain logo" />
-            </div>
-            <div className="cc-flag-unit">
-              <svg className="cc-flag-cloth" viewBox="0 0 60 36" xmlns="http://www.w3.org/2000/svg">
-                <rect width="60" height="36" fill="#00247d"/>
-                <path d="M0,0 L60,36 M60,0 L0,36" stroke="#fff" strokeWidth="7"/>
-                <path d="M0,0 L60,36 M60,0 L0,36" stroke="#cf142b" strokeWidth="3"/>
-                <path d="M30,0 V36 M0,18 H60" stroke="#fff" strokeWidth="11"/>
-                <path d="M30,0 V36 M0,18 H60" stroke="#cf142b" strokeWidth="6"/>
-              </svg>
-              <div className="cc-flag-pole" />
-            </div>
+      {/* ── NAV ────────────────────────────────────────────── */}
+      <div style={S.nav}>
+        <div style={S.navInner}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <img src="/branding/icon-1024.png" alt="Chip Chain" style={{ width: 40, height: 40, borderRadius: '50%' }} />
+            <span style={S.navTitle}>CHIP CHAIN</span>
           </div>
-          <div className="cc-sign-box">
-            <div className="cc-sign-main">CHIP CHAIN</div>
-            <div className="cc-sign-sub">🍟 The Great British Fry-Off · Live on Base</div>
-          </div>
-        </div>
-        <div className="cc-awning" />
-      </div>
-
-
-      {/* Header */}
-      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14, flexWrap:'wrap', gap:8 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-          <button onClick={() => setShowFaq(true)} style={{
-            background:'#FFD700', border:'2px solid #111', borderRadius:'50%',
-            width:24, height:24, fontWeight:900, fontSize:13, cursor:'pointer',
-            display:'flex', alignItems:'center', justifyContent:'center',
-            boxShadow:'2px 2px 0 #111', flexShrink:0,
-          }} title="FAQ — $CHIP, Wraps & Rewards">
-            ?
-          </button>
-          <button onClick={() => setShowRoadmap(true)} style={{
-            background:'#27ae60', border:'2px solid #111', borderRadius:'50%',
-            width:24, height:24, fontWeight:900, fontSize:12, cursor:'pointer',
-            display:'flex', alignItems:'center', justifyContent:'center',
-            boxShadow:'2px 2px 0 #111', flexShrink:0,
-          }} title="Roadmap">
-            🗺️
-          </button>
-          <a href="https://x.com/ChipChainShop" target="_blank" rel="noopener noreferrer" style={{
-            background:'#111', border:'2px solid #111', borderRadius:'50%',
-            width:24, height:24, cursor:'pointer', flexShrink:0,
-            display:'flex', alignItems:'center', justifyContent:'center',
-            boxShadow:'2px 2px 0 #555', textDecoration:'none',
-          }} title="Follow @ChipChainShop on X">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/>
-            </svg>
-          </a>
-        </div>
-        <div style={{ display:'flex', gap:6, alignItems:'center', flexWrap:'wrap' }}>
-          <div style={{ background:'#111', color:'#FFD700', borderRadius:6, padding:'4px 10px', fontSize:12, fontWeight:800 }}>
-            ⛓ {profile.chipBalance} $CHIP
-          </div>
-          <div style={{ background:'#e8f0ff', color:'#0052ff', borderRadius:6, padding:'4px 10px', fontSize:12, fontWeight:800, border:'1.5px solid #0052ff' }}>
-            👤 {profile.profileChip}
-          </div>
-          <button onClick={() => disconnect()} style={{ background:'none', border:'1.5px solid #ddd', borderRadius:6, padding:'4px 8px', fontSize:10, cursor:'pointer', color:'#aaa' }}>
-            {address?.slice(0,6)}...{address?.slice(-4)} ✕
-          </button>
+          <Link href="/play" style={S.navBtn}>🍟 Play Now</Link>
         </div>
       </div>
 
-      {/* Tab navigation */}
-      <div style={{ display:'flex', marginBottom:14, border:'2.5px solid #111', borderRadius:8, overflow:'hidden' }}>
-        {([
-          { id:'play',        label:'🍟 PLAY'        },
-          { id:'leaderboard', label:'🏆 TOP 50'       },
-          { id:'profile',     label:'👤 PROFILE'      },
-        ] as { id:Tab; label:string }[]).map((tab, i, arr) => (
-          <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{
-            flex:1, padding:'10px 6px', fontWeight:900, fontSize:13,
-            cursor:'pointer', border:'none',
-            background: activeTab === tab.id ? '#FFD700' : '#eee',
-            color: '#111',
-            borderRight: i < arr.length-1 ? '2px solid #111' : 'none',
-          }}>
-            {tab.label}
-          </button>
-        ))}
+      {/* ── HERO ───────────────────────────────────────────── */}
+      <div style={{ ...S.hero }} className="cc-halftone">
+        <img src="/branding/icon-1024.png" alt="Chip Chain logo" style={S.heroLogo} />
+        <h1 className="cc-hero-title" style={S.heroTitle}>CHIP CHAIN</h1>
+        <div style={S.heroSubtitle}>THE GREAT BRITISH FRY-OFF</div>
+        <div style={{ ...S.badge, background: '#27ae60' }} className="cc-hard-sm">
+          🟢 LIVE ON BASE MAINNET
+        </div>
+        <p style={S.heroText}>
+          Run your own onchain chip shop. Serve customers, earn <b>$CHIP</b> directly
+          to your wallet, collect <b>Newspaper Wrap NFTs</b>, and climb the live
+          leaderboard — every transaction is real, on Base.
+        </p>
+        <Link href="/play" style={S.ctaBtn} className="cc-hard">🍟 PLAY NOW — CONNECT WALLET</Link>
       </div>
 
-      {/* ── PLAY TAB ─────────────────────────────────────────── */}
-      {activeTab === 'play' && (
-        <>
-          {/* Steps */}
-          <div style={{ display:'flex', marginBottom:12, border:'2.5px solid #111', borderRadius:8, overflow:'hidden' }}>
-            {[{n:1,t:'🛎️ Get customer'},{n:2,t:'🍟 Pick items'},{n:3,t:'✅ Serve it!'}].map((s,i) => (
-              <div key={s.n} style={{ flex:1, padding:'7px 4px', textAlign:'center', fontSize:11, fontWeight:800,
-                background: step===s.n?'#FFD700':step>s.n?'#27ae60':'#eee',
-                color: step>s.n?'#fff':'#111',
-                borderRight: i<2?'2px solid #111':'none' }}>
-                {s.t}
-              </div>
-            ))}
-          </div>
+      {/* ── TICKER ─────────────────────────────────────────── */}
+      <div style={S.ticker}>
+        <div className="cc-ticker-track">
+          {[...TICKER_ITEMS, ...TICKER_ITEMS].map((t, i) => (
+            <span key={i} style={S.tickerItem}>{t}</span>
+          ))}
+        </div>
+      </div>
 
-          {/* Info strip */}
-          <div style={{ display:'flex', gap:8, marginBottom:12, flexWrap:'wrap' }}>
-            <div style={{ flex:1, background:'#e8f9ee', border:'2px solid #27ae60', borderRadius:8, padding:'7px 10px', fontSize:11, fontWeight:800, color:'#1a7a42', minHeight:44, display:'flex', alignItems:'center', gap:6 }}>
-              ⛓ <span><b>Manual serve</b> — tokens go onchain to your wallet every SERVE IT</span>
+      {/* ── PITCH ──────────────────────────────────────────── */}
+      <div style={S.section}>
+        <h2 style={S.h2}>🐟 What is Chip Chain?</h2>
+        <p style={S.pitchText}>
+          Chip Chain is a fish &amp; chip shop simulation where every order you serve
+          is a real Base transaction. Build each customer's order from a full British
+          chippy menu — fish, chips, wedges, mushy peas, sauces and drinks — then hit
+          <b> SERVE IT</b> to mint <b>$CHIP</b> points and a collectible{' '}
+          <b>Newspaper Wrap NFT</b> straight to your wallet.
+        </p>
+        <p style={S.pitchText}>
+          No middlemen, no off-chain points database pretending to be onchain — your
+          balance, your Wraps, and your leaderboard rank are all backed by contracts
+          you can verify on Basescan.
+        </p>
+      </div>
+
+      {/* ── FEATURES ───────────────────────────────────────── */}
+      <div style={S.section}>
+        <h2 style={S.h2}>🎮 Core Mechanics</h2>
+        <div className="cc-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, marginTop: 16 }}>
+          {FEATURES.map((f, i) => (
+            <div key={i} style={S.card} className="cc-hard-sm">
+              <div style={{ fontSize: 32, marginBottom: 8 }}>{f.emoji}</div>
+              <div style={S.cardTitle}>{f.title}</div>
+              <div style={S.cardText}>{f.text}</div>
             </div>
-            <div style={{ flex:1, background:'#e8f0ff', border:'2px solid #0052ff', borderRadius:8, padding:'7px 10px', fontSize:11, fontWeight:800, color:'#003cbf', minHeight:44, display:'flex', alignItems:'center', gap:6 }}>
-              🤖 <span><b>Auto Serve</b> — earns 100 $CHIP every 10 min into your profile (no Newspaper Wraps). Withdraw anytime.</span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── HOW IT WORKS ───────────────────────────────────── */}
+      <div style={{ ...S.section, background: '#fff' }}>
+        <h2 style={S.h2}>📋 How It Works</h2>
+        <div className="cc-grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14, marginTop: 16 }}>
+          {STEPS.map((s) => (
+            <div key={s.n} style={S.stepCard} className="cc-hard-sm">
+              <div style={S.stepNum}>{s.n}</div>
+              <div style={{ fontSize: 28, margin: '6px 0' }}>{s.emoji}</div>
+              <div style={S.cardTitle}>{s.title}</div>
+              <div style={S.cardText}>{s.text}</div>
             </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── ONCHAIN FEES ───────────────────────────────────── */}
+      <div style={S.section}>
+        <h2 style={S.h2}>⛓ Every Action, Onchain</h2>
+        <div style={S.feeTable} className="cc-hard">
+          <div style={S.feeHeaderRow}>
+            <span style={{ flex: 1.4 }}>Action</span>
+            <span style={{ flex: 1 }}>Fee</span>
+            <span style={{ flex: 2 }}>Result</span>
           </div>
-
-          {/* Action buttons */}
-          <div style={{ display:'flex', gap:8, marginBottom:12, flexWrap:'wrap' }}>
-            <button onClick={getNextCustomer} style={{ flex:2, minHeight:48, background:'#FFD700', border:'3px solid #111', borderRadius:8, fontWeight:900, fontSize:15, cursor:'pointer', boxShadow:'3px 3px 0 #111' }}>
-              🛎️ GET NEXT CUSTOMER
-            </button>
-            <button onClick={() => {
-                if (profile.hasAutoServe) { setLastMsg('Auto-serve active! Check Profile tab.'); return }
-                if (!canAffordAutoServe) {
-                  setLastMsg(`⚠️ Insufficient ETH balance — you need at least ${formatEth(autoServeFee + GAS_BUFFER)} ETH to activate Auto Serve`)
-                  return
-                }
-                buyAutoServe()
-              }}
-              disabled={buyStatus==='signing'||buyStatus==='pending'}
-              style={{ flex:1, minHeight:48, background:profile.hasAutoServe?'#27ae60':'#fff', color:profile.hasAutoServe?'#fff':'#111', border:'3px solid #111', borderRadius:8, fontWeight:900, fontSize:13, cursor:'pointer', boxShadow:'3px 3px 0 #111' }}>
-              {buyStatus==='signing'?'⏳ Signing...':buyStatus==='pending'?'⏳ Confirming...':profile.hasAutoServe?'🤖 Autoserve ON':'🤖 Autoserve'}
-            </button>
-            <button onClick={() => withdrawProfile()}
-              disabled={profile.profileChip===0||withdrawStatus==='signing'||withdrawStatus==='pending'}
-              style={{ flex:1, minHeight:48, background:'#fff', color:'#0052ff', border:'3px solid #0052ff', borderRadius:8, fontWeight:900, fontSize:13, cursor:'pointer', boxShadow:'3px 3px 0 #0052ff', opacity:profile.profileChip===0?0.5:1 }}>
-              {withdrawStatus==='signing'?'⏳ Signing...':withdrawStatus==='pending'?'⏳ Confirming...':'⬇️ Withdraw'}
-            </button>
-          </div>
-
-          <style>{`
-            @media (max-width: 520px) {
-              .order-grid {
-                grid-template-columns: 1fr !important;
-              }
-            }
-          `}</style>
-
-          {/* Two columns (stacks to one on mobile) */}
-          <div className="order-grid" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
-
-            {/* LEFT: Order */}
-            <div style={{ background:'#fff', border:'3px solid #111', borderRadius:10, overflow:'hidden' }}>
-              <div style={{ background:'#e67e22', color:'#fff', padding:'8px 12px', fontWeight:900, fontSize:14, display:'flex', alignItems:'center', justifyContent:'space-between', gap:6 }}>
-                <span>{customer?`${customer.e} ${customer.n}'s Order`:'WAITING FOR CUSTOMER'}</span>
-                {profile.hasMultiplier && (
-                  <span style={{ background:'#FFD700', color:'#111', border:'2px solid #111', borderRadius:5, padding:'1px 6px', fontSize:10, fontWeight:900, flexShrink:0 }} title="Collection complete — all $CHIP earnings doubled">
-                    🏆 2x
-                  </span>
-                )}
-              </div>
-              <div style={{ padding:12 }}>
-                {/* Queue */}
-                {queue.slice(0,3).map((c,i) => (
-                  <div key={i} style={{ display:'flex', alignItems:'center', gap:6, padding:'2px 0', borderBottom:'1px solid #f5f5f5', fontSize:11, fontWeight:800, color:'#999' }}>
-                    <span>{c.e}</span><span style={{ flex:1 }}>{c.n}</span>
-                    <span style={{ color:'#27ae60' }}>+{c.tip}$</span>
-                  </div>
-                ))}
-
-                {customer ? (
-                  <div style={{ marginTop:10, paddingTop:10, borderTop:'2px dashed #eee' }}>
-                    <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:10 }}>
-                      <span style={{ fontSize:38 }}>{customer.e}</span>
-                      <div>
-                        <div style={{ fontWeight:900, fontSize:15 }}>{customer.n}</div>
-                        <div style={{ fontSize:10, color:'#888', fontStyle:'italic' }}>{customer.q}</div>
-                        <div style={{ background:'#FFD700', display:'inline-block', padding:'2px 8px', borderRadius:4, border:'1.5px solid #111', fontSize:10, fontWeight:900, marginTop:4 }}>
-                          💰 +{profile.hasMultiplier ? customer.tip * 2 : customer.tip} $CHIP{profile.hasMultiplier ? ' (2x)' : ''}
-                        </div>
-                      </div>
-                    </div>
-                    {/* Timer bar */}
-                    <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:10 }}>
-                      <div style={{ flex:1, height:7, background:'#eee', borderRadius:4, overflow:'hidden' }}>
-                        <div style={{ height:'100%', borderRadius:4, transition:'width 1s,background .3s',
-                          width:`${(timerLeft/40)*100}%`,
-                          background:timerLeft>20?'#27ae60':timerLeft>10?'#e67e22':'#cc1111' }} />
-                      </div>
-                      <span style={{ fontSize:11, fontWeight:900 }}>{timerLeft}s</span>
-                    </div>
-                    {/* Order items */}
-                    <div style={{ fontSize:9, fontWeight:900, color:'#aaa', letterSpacing:2, marginBottom:5 }}>THEY WANT:</div>
-                    {Array.from(new Set(customer.o)).map(id => {
-                      const m = MENU.find(x=>x.id===id)!
-                      const cnt  = customer.o.filter(x=>x===id).length
-                      const have = tray.filter(x=>x===id).length
-                      const ok   = have>=cnt&&have>0
-                      return (
-                        <div key={id} style={{ display:'flex', alignItems:'center', gap:6, padding:'3px 7px', marginBottom:2, borderRadius:5,
-                          background:ok?'#e6f9ee':'#f8f8f8', border:`1.5px solid ${ok?'#27ae60':'#e0e0e0'}` }}>
-                          <span style={{ fontSize:16 }}>{m.ico}</span>
-                          <span style={{ fontWeight:800, fontSize:12 }}>{cnt>1?`${cnt}x `:''}{m.nm}</span>
-                          {ok && <span style={{ marginLeft:'auto', color:'#27ae60', fontWeight:900 }}>✓</span>}
-                        </div>
-                      )
-                    })}
-                  </div>
-                ) : (
-                  <div style={{ textAlign:'center', padding:'16px 0', color:'#ccc', fontSize:12 }}>
-                    <div style={{ fontSize:36, marginBottom:6 }}>🛎️</div>
-                    Press GET NEXT CUSTOMER
-                  </div>
-                )}
-              </div>
+          {FEES.map((f, i) => (
+            <div key={i} style={{ ...S.feeRow, borderBottom: i === FEES.length - 1 ? 'none' : '1.5px solid #f0f0f0' }}>
+              <span style={{ flex: 1.4, fontWeight: 900 }}>{f.action}</span>
+              <span style={{ flex: 1, color: '#cc1111', fontWeight: 900 }}>{f.fee}</span>
+              <span style={{ flex: 2, color: '#666' }}>{f.result}</span>
             </div>
+          ))}
+        </div>
+        <p style={{ ...S.pitchText, marginTop: 12, fontSize: 13, color: '#888', textAlign: 'center' }}>
+          All fees flow to the <b>Treasury contract</b> — fully transparent and
+          verifiable onchain, funding ongoing development and future rewards.
+        </p>
+      </div>
 
-            {/* RIGHT: Menu */}
-            <div style={{ background:'#fff', border:'3px solid #111', borderRadius:10, overflow:'hidden' }}>
-              <div style={{ background:'#cc1111', color:'#fff', padding:'8px 12px', fontWeight:900, fontSize:14 }}>
-                🍽️ BUILD THE ORDER
-              </div>
-              <div style={{ fontSize:9, fontWeight:900, color:'#aaa', letterSpacing:2, padding:'5px 8px 2px' }}>MENU — TAP TO ADD</div>
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:3, padding:'0 6px 6px' }}>
-                {MENU.map(m => {
-                  const inOrd = customer?.o.includes(m.id)
-                  return (
-                    <button key={m.id} onClick={() => addItem(m.id)} disabled={!customer}
-                      style={{ background:inOrd?'#e8f0fd':'#fff', border:`2px solid ${inOrd?'#1757a8':'#111'}`,
-                        borderRadius:7, padding:'5px 2px', cursor:customer?'pointer':'not-allowed',
-                        textAlign:'center', opacity:customer&&!inOrd?0.4:1,
-                        minHeight:52, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
-                      <span style={{ fontSize:20, lineHeight:1 }}>{m.ico}</span>
-                      <span style={{ fontSize:8, fontWeight:900, color:'#555', marginTop:2, textTransform:'uppercase' }}>{m.nm}</span>
-                    </button>
-                  )
-                })}
-              </div>
-
-              {/* Serve button */}
-              <div style={{ padding:'0 6px 6px' }}>
-                <button onClick={handleServe}
-                  disabled={!orderReady||serveStatus==='signing'||serveStatus==='pending'}
-                  style={{ width:'100%', minHeight:50, background:orderReady?'#27ae60':'#ccc',
-                    color:orderReady?'#fff':'#999', border:'3px solid #111', borderRadius:8,
-                    fontWeight:900, fontSize:20, cursor:orderReady?'pointer':'not-allowed',
-                    boxShadow:orderReady?'0 4px 0 #1a7a42,0 4px 0 2px #111':'none' }}>
-                  {serveStatus==='signing'?'⏳ Signing...':serveStatus==='pending'?'⏳ Confirming...':'🍟 SERVE IT!'}
-                </button>
-                {orderReady && !canAffordServe && (
-                  <div style={{ marginTop:6, fontSize:11, fontWeight:800, color:'#cc1111', textAlign:'center' }}>
-                    ⚠️ Insufficient ETH — need at least {formatEth(serveFee + GAS_BUFFER)} ETH to serve
-                  </div>
-                )}
-              </div>
-
-              {/* Tray */}
-              {tray.length>0&&(
-                <div style={{ borderTop:'1px dashed #eee', margin:'0 6px 6px', paddingTop:5 }}>
-                  <div style={{ fontSize:8, fontWeight:900, color:'#aaa', letterSpacing:2, marginBottom:3 }}>YOUR TRAY — TAP TO REMOVE</div>
-                  <div style={{ display:'flex', flexWrap:'wrap', gap:3 }}>
-                    {tray.map((id,i)=>{
-                      const m=MENU.find(x=>x.id===id)!
-                      return (
-                        <button key={i} onClick={()=>removeItem(i)}
-                          style={{ background:'#fff', border:'1.5px solid #111', borderRadius:5, padding:'2px 6px', fontSize:11, fontWeight:800, cursor:'pointer' }}>
-                          {m.ico} {m.nm}
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Status message */}
-          {lastMsg && (
-            <div style={{ marginTop:12, background:'#111', color:'#FFD700', borderRadius:8, padding:'10px 16px', fontWeight:800, fontSize:14, textAlign:'center' }}>
-              {lastMsg}
-            </div>
-          )}
-
-          {/* Stats */}
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8, marginTop:12 }}>
-            {[
-              { label:'⛓ Onchain $CHIP', value:profile.chipBalance },
-              { label:'👤 Profile $CHIP', value:profile.profileChip },
-              { label:'🍟 Total Served',  value:profile.totalServed },
-            ].map(s=>(
-              <div key={s.label} style={{ background:'#111', borderRadius:8, padding:'8px 10px', textAlign:'center' }}>
-                <div style={{ fontSize:8, color:'#888', letterSpacing:2, textTransform:'uppercase' }}>{s.label}</div>
-                <div style={{ fontSize:22, fontWeight:900, color:'#FFD700', fontFamily:'serif' }}>{s.value}</div>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {/* ── LEADERBOARD TAB ──────────────────────────────────── */}
-      {activeTab === 'leaderboard' && (
-        <Leaderboard currentAddress={address} />
-      )}
-
-      {/* ── PROFILE TAB ──────────────────────────────────────── */}
-      {activeTab === 'profile' && (
-        <>
-        <div style={{ background:'#fff', border:'3px solid #111', borderRadius:12, overflow:'hidden' }}>
-          <div style={{ background:'#1757a8', color:'#fff', padding:'10px 14px', fontFamily:'serif', fontSize:16, fontWeight:900 }}>
-            👤 Your Profile
-          </div>
-          <div style={{ padding:16 }}>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:14 }}>
-              {[
-                { label:'⛓ Onchain $CHIP', value:profile.chipBalance, color:'#e67e22' },
-                { label:'👤 Profile $CHIP', value:profile.profileChip, color:'#0052ff' },
-                { label:'🍟 Total Served',  value:profile.totalServed, color:'#FFD700' },
-                { label:'⛓ Mainnet Served', value:profile.mainnetServed, color:'#27ae60' },
-              ].map(s=>(
-                <div key={s.label} style={{ background:'#f8f8f8', borderRadius:8, padding:12, border:'1.5px solid #eee' }}>
-                  <div style={{ fontSize:9, fontWeight:900, color:'#aaa', letterSpacing:2, textTransform:'uppercase' }}>{s.label}</div>
-                  <div style={{ fontSize:28, fontWeight:900, color:s.color, fontFamily:'serif' }}>{s.value}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* FLEX on X */}
-            {(() => {
-              const flexUrl = `${process.env.NEXT_PUBLIC_URL || 'https://v0-chipchain.vercel.app'}/flex?chip=${profile.chipBalance}&served=${profile.totalServed}&multiplier=${profile.hasMultiplier ? '1' : '0'}&t=${profile.totalServed % 4}`
-              const tweetText = encodeURIComponent(
-                `I've earned ${profile.chipBalance} $CHIP at Chip Chain 🍟⛓\n` +
-                `${profile.totalServed} customers served${profile.hasMultiplier ? ' · 🏆 2x multiplier active' : ''}\n\n` +
-                `The Great British Fry-Off — live on Base 🔵\n${flexUrl}\n\n` +
-                `Follow @ChipChainShop for updates 🍟\n\n#ChipChain #Base #OnchainGaming`
-              )
-              return (
-                <a
-                  href={`https://x.com/intent/tweet?text=${tweetText}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display:'flex', alignItems:'center', justifyContent:'space-between',
-                    background:'linear-gradient(135deg,#FFD700,#ffb800)',
-                    border:'3px solid #111', borderRadius:10,
-                    padding:'12px 16px', marginBottom:14,
-                    boxShadow:'4px 4px 0 #111', textDecoration:'none',
-                    cursor:'pointer',
-                  }}
-                >
-                  <div>
-                    <div style={{ fontFamily:'serif', fontSize:15, fontWeight:900, color:'#111', letterSpacing:1 }}>
-                      🏆 FLEX YOUR SCORE
-                    </div>
-                    <div style={{ fontSize:11, color:'#555', marginTop:2, fontWeight:700 }}>
-                      {profile.chipBalance} $CHIP · {profile.totalServed} served{profile.hasMultiplier ? ' · 2x active 🔥' : ''}
-                    </div>
-                  </div>
-                  <div style={{
-                    background:'#111', borderRadius:'50%', width:34, height:34,
-                    display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0,
-                  }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/>
-                    </svg>
-                  </div>
-                </a>
-              )
-            })()}
-
-            {/* Auto Serve status */}
-            <div style={{
-              background: profile.hasAutoServe ? '#e8f9ee' : '#f8f8f8',
-              border: `1.5px solid ${profile.hasAutoServe ? '#27ae60' : '#eee'}`,
-              borderRadius: 8, padding: 12, marginBottom: 14,
-              display: 'flex', alignItems: 'center', gap: 10,
-            }}>
-              <span style={{ fontSize: 24 }}>🤖</span>
+      {/* ── ROADMAP SUMMARY ────────────────────────────────── */}
+      <div style={{ ...S.section, background: '#fff' }}>
+        <h2 style={S.h2}>🗺️ Roadmap</h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
+          {ROADMAP_SUMMARY.map((p, i) => (
+            <div key={i} style={S.roadmapRow} className="cc-hard-sm">
+              <span style={{ fontSize: 26, flexShrink: 0 }}>{p.emoji}</span>
               <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 900, fontSize: 13, color: profile.hasAutoServe ? '#1a7a42' : '#888' }}>
-                  {profile.hasAutoServe ? 'Auto Serve ACTIVE' : 'Auto Serve not active'}
-                </div>
-                <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>
-                  {profile.hasAutoServe
-                    ? 'Earning 100 $CHIP every 10 minutes into your profile balance'
-                    : 'Hire for 0.003 ETH (one-time) to earn 100 $CHIP every 10 min passively'}
-                </div>
-                <div style={{ fontSize: 11, color: '#c77', marginTop: 4, fontStyle: 'italic' }}>
-                  📰 Note: Auto Serve does not award Newspaper Wraps — serve manually to grow your collection.
-                </div>
+                <div style={S.cardTitle}>{p.title}</div>
+                <div style={{ ...S.cardText, marginTop: 2 }}>{p.text}</div>
               </div>
+              <span style={{ ...S.statusBadge, background: p.color, color: p.color === '#eee' ? '#888' : '#111' }}>
+                {p.status}
+              </span>
             </div>
+          ))}
+        </div>
+        <p style={{ ...S.pitchText, marginTop: 14, fontSize: 12, color: '#aaa', textAlign: 'center', fontStyle: 'italic' }}>
+          Targets are intentionally modest — built incrementally based on real player feedback, not hype.
+        </p>
+      </div>
 
-            <div style={{ fontSize: 11, color: '#aaa', marginBottom: 16, fontFamily: 'monospace' }}>
-              Wallet: {address}
+      {/* ── FAQ TEASER ─────────────────────────────────────── */}
+      <div style={S.section}>
+        <h2 style={S.h2}>❓ Quick FAQ</h2>
+        <div className="cc-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginTop: 16 }}>
+          {FAQ_TEASER.map((f, i) => (
+            <div key={i} style={S.faqCard} className="cc-hard-sm">
+              <div style={{ ...S.cardTitle, marginBottom: 6 }}>{f.q}</div>
+              <div style={S.cardText}>{f.a}</div>
             </div>
-            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-              <button onClick={()=>withdrawProfile()}
-                disabled={profile.profileChip===0||withdrawStatus==='signing'||withdrawStatus==='pending'}
-                style={{ minHeight:48, background:'#fff', color:'#0052ff', border:'3px solid #0052ff', borderRadius:8, fontWeight:900, fontSize:15, cursor:'pointer', boxShadow:'3px 3px 0 #0052ff', opacity:profile.profileChip===0?0.5:1 }}>
-                {withdrawStatus==='signing'?'⏳ Signing...':withdrawStatus==='pending'?'⏳ Confirming...':'⬇️ WITHDRAW PROFILE $CHIP ONCHAIN'}
-              </button>
-              <button onClick={()=>disconnect()}
-                style={{ minHeight:44, background:'none', border:'1.5px solid #ddd', borderRadius:8, fontWeight:700, fontSize:13, cursor:'pointer', color:'#888' }}>
-                Disconnect Wallet
-              </button>
-            </div>
-          </div>
+          ))}
         </div>
-
-        <div style={{ marginTop: 12 }}>
-          <WrapGallery address={address} />
+        <div style={{ textAlign: 'center', marginTop: 16 }}>
+          <Link href="/play" style={S.secondaryBtn} className="cc-hard-sm">See full FAQ in the app →</Link>
         </div>
+      </div>
 
-        <div style={{ marginTop: 12 }}>
-          <FAQ />
+      {/* ── FINAL CTA ──────────────────────────────────────── */}
+      <div style={{ ...S.hero, paddingTop: 50, paddingBottom: 60 }} className="cc-halftone">
+        <h2 style={{ ...S.heroTitle, fontSize: 42 }}>READY TO FRY?</h2>
+        <p style={{ ...S.heroText, marginBottom: 24 }}>
+          Connect your wallet and serve your first customer in under a minute.
+        </p>
+        <Link href="/play" style={S.ctaBtn} className="cc-hard">🍟 PLAY CHIP CHAIN NOW</Link>
+      </div>
+
+      {/* ── FOOTER ─────────────────────────────────────────── */}
+      <div style={S.footer}>
+        <img src="/branding/icon-1024.png" alt="Chip Chain" style={{ width: 56, height: 56, borderRadius: '50%', marginBottom: 10 }} />
+        <div style={S.footerTitle}>CHIP CHAIN</div>
+        <div style={S.footerSubtitle}>THE GREAT BRITISH FRY-OFF</div>
+        <div style={{ ...S.badge, background: '#0052ff', color: '#fff', marginTop: 12 }} className="cc-hard-sm">
+          BUILT ON BASE
         </div>
-
-        <div style={{ marginTop: 12 }}>
-          <Roadmap />
+        <div style={S.footerNote}>
+          Live on Base Mainnet · Real ETH fees · Onchain transparency by design
         </div>
-        </>
-      )}
-
-      {/* FAQ MODAL — accessible from any tab via the ? badge */}
-      {showFaq && (
-        <div
-          onClick={() => setShowFaq(false)}
-          style={{
-            position:'fixed', inset:0, background:'rgba(0,0,0,.6)', zIndex:1000,
-            display:'flex', alignItems:'center', justifyContent:'center', padding:16,
-          }}
-        >
-          <div
-            onClick={e => e.stopPropagation()}
-            style={{ maxWidth:520, width:'100%', maxHeight:'85vh', overflowY:'auto', borderRadius:12 }}
-          >
-            <div style={{ position:'relative' }}>
-              <button onClick={() => setShowFaq(false)} style={{
-                position:'absolute', top:8, right:8, zIndex:10,
-                background:'#fff', border:'2px solid #111', borderRadius:'50%',
-                width:28, height:28, fontWeight:900, fontSize:16, cursor:'pointer',
-                boxShadow:'2px 2px 0 #111',
-              }}>
-                ✕
-              </button>
-              <FAQ />
-            </div>
-          </div>
+        <div style={{ marginTop: 14 }}>
+          <a href="/terms" style={{ fontSize: 11, color: '#666', textDecoration: 'underline' }}>Terms of Service</a>
+          <span style={{ color: '#444', margin: '0 8px' }}>·</span>
+          <a href="/privacy" style={{ fontSize: 11, color: '#666', textDecoration: 'underline' }}>Privacy Policy</a>
         </div>
-      )}
-
-      {/* ROADMAP MODAL — accessible from any tab via the 🗺️ badge */}
-      {showRoadmap && (
-        <div
-          onClick={() => setShowRoadmap(false)}
-          style={{
-            position:'fixed', inset:0, background:'rgba(0,0,0,.6)', zIndex:1000,
-            display:'flex', alignItems:'center', justifyContent:'center', padding:16,
-          }}
-        >
-          <div
-            onClick={e => e.stopPropagation()}
-            style={{ maxWidth:520, width:'100%', maxHeight:'85vh', overflowY:'auto', borderRadius:12 }}
-          >
-            <div style={{ position:'relative' }}>
-              <button onClick={() => setShowRoadmap(false)} style={{
-                position:'absolute', top:8, right:8, zIndex:10,
-                background:'#fff', border:'2px solid #111', borderRadius:'50%',
-                width:28, height:28, fontWeight:900, fontSize:16, cursor:'pointer',
-                boxShadow:'2px 2px 0 #111',
-              }}>
-                ✕
-              </button>
-              <Roadmap />
-            </div>
-          </div>
-        </div>
-      )}
-
+      </div>
     </div>
   )
+}
+
+const S: Record<string, React.CSSProperties> = {
+  page: { fontFamily: 'Nunito, sans-serif', color: '#111', background: '#f5f0e8', overflowX: 'hidden' },
+
+  nav: { background: '#fff', borderBottom: '3px solid #111', position: 'sticky', top: 0, zIndex: 10 },
+  navInner: { maxWidth: 960, margin: '0 auto', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
+  navTitle: { fontFamily: 'Bangers, serif', fontSize: 24, color: '#cc1111', letterSpacing: 1 },
+  navBtn: { background: '#FFD700', border: '2.5px solid #111', borderRadius: 8, padding: '8px 16px', fontWeight: 900, fontSize: 13, color: '#111', textDecoration: 'none', boxShadow: '2.5px 2.5px 0 #111' },
+
+  hero: {
+    textAlign: 'center', padding: '56px 20px 48px',
+    backgroundImage: 'linear-gradient(rgba(26,144,216,0.62), rgba(26,144,216,0.62)), url(/branding/shop-bg.jpg)',
+    backgroundSize: 'cover', backgroundPosition: 'center',
+  },
+  heroLogo: { width: 140, height: 140, borderRadius: '50%', marginBottom: 16, border: '4px solid #111', boxShadow: '6px 6px 0 #111' },
+  heroTitle: { fontFamily: 'Bangers, serif', fontSize: 72, color: '#fff', margin: 0, letterSpacing: 3, textShadow: '4px 4px 0 #111' },
+  heroSubtitle: { fontFamily: 'Fredoka, sans-serif', fontWeight: 700, fontSize: 18, color: '#FFD700', letterSpacing: 4, marginTop: 6, textShadow: '2px 2px 0 #111' },
+  badge: { display: 'inline-block', marginTop: 18, padding: '6px 16px', borderRadius: 20, fontWeight: 900, fontSize: 12, color: '#fff', letterSpacing: 1 },
+  heroText: { maxWidth: 580, margin: '20px auto 0', fontSize: 16, lineHeight: 1.6, color: '#fff', fontWeight: 700 },
+  ctaBtn: { display: 'inline-block', marginTop: 24, background: '#FFD700', color: '#111', fontFamily: 'Fredoka, sans-serif', fontWeight: 900, fontSize: 18, padding: '16px 36px', borderRadius: 10, textDecoration: 'none', border: '3px solid #111' },
+  heroNote: { maxWidth: 520, margin: '18px auto 0', fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 700, lineHeight: 1.5 },
+
+  ticker: { background: '#111', color: '#FFD700', overflow: 'hidden', whiteSpace: 'nowrap', padding: '10px 0' },
+  tickerItem: { fontFamily: 'Fredoka, sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: 1, padding: '0 32px', flexShrink: 0 },
+
+  section: { maxWidth: 960, margin: '0 auto', padding: '48px 20px' },
+  h2: { fontFamily: 'Fredoka, sans-serif', fontWeight: 900, fontSize: 28, textAlign: 'center', margin: 0, color: '#111' },
+  pitchText: { fontSize: 15, lineHeight: 1.7, color: '#444', maxWidth: 700, margin: '14px auto 0' },
+
+  card: { background: '#fff', borderRadius: 10, padding: 18, textAlign: 'left' },
+  cardTitle: { fontFamily: 'Fredoka, sans-serif', fontWeight: 800, fontSize: 15, color: '#111' },
+  cardText: { fontSize: 12.5, color: '#777', lineHeight: 1.5, marginTop: 4 },
+
+  stepCard: { background: '#f9f6f0', borderRadius: 10, padding: '16px 14px', textAlign: 'center' },
+  stepNum: { fontFamily: 'Bangers, serif', fontSize: 22, color: '#cc1111', background: '#FFD700', width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #111', margin: '0 auto' },
+
+  feeTable: { background: '#fff', borderRadius: 10, overflow: 'hidden' },
+  feeHeaderRow: { display: 'flex', background: '#111', color: '#FFD700', fontSize: 11, fontWeight: 900, letterSpacing: 1, textTransform: 'uppercase', padding: '10px 16px' },
+  feeRow: { display: 'flex', alignItems: 'center', padding: '12px 16px', fontSize: 13 },
+
+  roadmapRow: { display: 'flex', alignItems: 'center', gap: 14, background: '#fff', borderRadius: 10, padding: '12px 16px' },
+  statusBadge: { fontSize: 10, fontWeight: 900, padding: '4px 10px', borderRadius: 5, letterSpacing: 1, flexShrink: 0 },
+
+  faqCard: { background: '#fff', borderRadius: 10, padding: 16 },
+
+  secondaryBtn: { display: 'inline-block', background: '#fff', color: '#0052ff', fontFamily: 'Fredoka, sans-serif', fontWeight: 800, fontSize: 14, padding: '10px 22px', borderRadius: 8, textDecoration: 'none', border: '2.5px solid #0052ff' },
+
+  footer: { textAlign: 'center', padding: '40px 20px', background: '#111' },
+  footerTitle: { fontFamily: 'Bangers, serif', fontSize: 28, color: '#FFD700', letterSpacing: 2 },
+  footerSubtitle: { fontFamily: 'Fredoka, sans-serif', fontWeight: 700, fontSize: 13, color: '#fff', letterSpacing: 3, marginTop: 2 },
+  footerNote: { fontSize: 11, color: '#888', marginTop: 14, maxWidth: 420, marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.6 },
 }

@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://v0-chipchain.vercel.app'
+  const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://chipchain.shop'
 
   return {
     rules: {
