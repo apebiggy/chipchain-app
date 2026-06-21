@@ -64,7 +64,7 @@ A marketing landing page lives at `/welcome` (pop-art British chippy theme, real
 
 ## 🍟 Tokenomics
 
-**$CHIP is currently a non-transferable onchain points system** — not a financial instrument, not tradeable, not listed on any exchange. Points are earned by playing. A real, tradeable **$CHIP token (TGE)** is planned post-launch (see Roadmap), with allocations based on total $CHIP balances (testnet + mainnet combined) and Newspaper Wrap collection progress.
+**$CHIP is currently a non-transferable onchain points system** — not a financial instrument, not tradeable, not listed on any exchange. Points are earned by playing. A real, tradeable **$CHIP token (TGE)** is planned post-launch (see Roadmap), with allocations based on total mainnet $CHIP balances and Newspaper Wrap collection progress.
 
 Every transaction sends a small protocol fee to an onchain **Treasury** contract:
 
