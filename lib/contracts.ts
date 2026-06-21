@@ -15,8 +15,12 @@ export const CONTRACTS = {
 // directly against package internals) — only the documented "legacy"
 // per-transaction approach is real and working today, so that's what
 // we use here, passed explicitly into every writeContractAsync call.
+//
+// Code is tied to the verified domain (chipchain.shop) — this was
+// re-issued as bc_nphui9q1 after switching from the vercel.app domain,
+// since Builder Codes are bound to a specific verified domain.
 import { Attribution } from 'ox/erc8021'
-export const BUILDER_CODE_SUFFIX = Attribution.toDataSuffix({ codes: ['bc_h20d7bcz'] })
+export const BUILDER_CODE_SUFFIX = Attribution.toDataSuffix({ codes: ['bc_nphui9q1'] })
 
 // ── Fees ───────────────────────────────────────────────────────
 // These are FALLBACK values only, used for the very first render before
