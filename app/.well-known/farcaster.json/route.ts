@@ -23,7 +23,7 @@ export async function GET() {
       splashBackgroundColor: '#1a90d8',
 
       subtitle: 'The Great British Fry-Off',
-      description: 'Serve fish and chips, earn $CHIP onchain, and collect Newspaper Wrap NFTs in this British chippy game built on Base. Live on Base Mainnet now.',
+      description: 'Serve fish and chips, earn CHIP onchain, and collect Newspaper Wrap NFTs in this British chippy game built on Base. Live on Base Mainnet now.',
       tagline: 'Serve, earn, collect onchain',
 
       screenshotUrls: [
@@ -37,7 +37,7 @@ export async function GET() {
 
       heroImageUrl: `${BASE_URL}/og-image.png`,
       ogTitle: 'Chip Chain - Live on Base',
-      ogDescription: 'Serve fish and chips, earn $CHIP onchain, and climb the leaderboard. Live on Base Mainnet.',
+      ogDescription: 'Serve fish and chips, earn CHIP onchain, and climb the leaderboard. Live on Base Mainnet.',
       ogImageUrl: `${BASE_URL}/og-image.png`,
 
       buttonTitle: 'Play Chip Chain',
