@@ -62,28 +62,53 @@ export default function Home() {
   // there) and auto-connect silently if a wallet is already
   // authorized, so returning players don't need to tap anything.
   const [isInWalletBrowser, setIsInWalletBrowser] = useState(false)
+  const [isInFarcaster, setIsInFarcaster] = useState(false)
   const [autoConnectAttempted, setAutoConnectAttempted] = useState(false)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
+
     const eth = (window as any).ethereum
     const ua = navigator.userAgent || ''
-    const detected = Boolean(eth?.isCoinbaseWallet) || /CoinbaseWallet|Base\/\d/i.test(ua)
-    setIsInWalletBrowser(detected)
 
-    if (!detected || isConnected || autoConnectAttempted) return
+    // Detect Base App / Coinbase Wallet in-app browser
+    const inBaseApp = Boolean(eth?.isCoinbaseWallet) || /CoinbaseWallet|Base\/\d/i.test(ua)
+
+    // Detect Farcaster Mini App context — the SDK sets window.parent
+    // to something other than window when running inside a Farcaster client,
+    // and exposes a global __farcasterContext or similar marker.
+    const inFarcaster = Boolean(
+      (window as any).__farcasterFrameContext ||
+      (window as any).farcaster ||
+      window !== window.parent
+    )
+
+    setIsInWalletBrowser(inBaseApp)
+    setIsInFarcaster(inFarcaster)
+
+    if (isConnected || autoConnectAttempted) return
     setAutoConnectAttempted(true)
 
-    // Non-prompting check for an already-authorized account — only
-    // proceeds if the wallet has previously granted access, never
-    // triggers an unexpected popup.
-    eth?.request?.({ method: 'eth_accounts' })
-      .then((accounts: string[]) => {
-        if (accounts && accounts.length > 0) {
-          connect({ connector: baseAccount({ appName: 'Chip Chain' }) })
-        }
-      })
-      .catch(() => {})
+    if (inFarcaster) {
+      // Inside Farcaster — use the Mini App connector which auto-connects
+      // to the user's Farcaster wallet with no popup needed.
+      // Small delay lets the SDK initialise before we attempt connection.
+      setTimeout(() => {
+        import('@farcaster/miniapp-sdk').then(({ sdk }) => {
+          sdk.actions.ready().catch(() => {})
+        })
+        connect({ connector: { id: 'farcasterMiniApp' } as any })
+      }, 100)
+    } else if (inBaseApp) {
+      // Inside Base App — non-prompting check for already-authorized account
+      eth?.request?.({ method: 'eth_accounts' })
+        .then((accounts: string[]) => {
+          if (accounts && accounts.length > 0) {
+            connect({ connector: baseAccount({ appName: 'Chip Chain' }) })
+          }
+        })
+        .catch(() => {})
+    }
   }, [isConnected, autoConnectAttempted, connect])
 
   // Small flat buffer on top of the fee itself to cover gas (Base gas is tiny,
@@ -190,15 +215,22 @@ export default function Home() {
         <img src="/branding/logo-full.png" alt="Chip Chain" style={{ width: 160, height: 'auto', marginBottom: 16, filter: 'drop-shadow(3px 4px 0 rgba(0,0,0,0.3))' }} />
         <h1 style={{ fontFamily:'serif', fontSize:48, color:'#cc1111', textShadow:'3px 3px 0 #111', marginBottom:8, letterSpacing:4 }}>CHIP CHAIN</h1>
         <p style={{ color:'#fff', fontWeight:800, marginBottom:28, fontSize:16 }}>The Great British Fry-Off · Live on Base</p>
-        <button onClick={() => connect({ connector: baseAccount({ appName:'Chip Chain' }) })}
-          style={{ background:'#0052ff', color:'#fff', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', marginBottom:12, boxShadow:'5px 5px 0 #003dbf', width:'100%', maxWidth:320 }}>
-          {isInWalletBrowser ? 'Connect Wallet' : 'Connect Base Wallet'}
-        </button>
-        {!isInWalletBrowser && (
-          <button onClick={() => connect({ connector: metaMask() })}
-            style={{ background:'#fff', color:'#111', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', boxShadow:'5px 5px 0 #111', width:'100%', maxWidth:320 }}>
-            🦊 Connect MetaMask
-          </button>
+        {isInFarcaster ? (
+          // Inside Farcaster — auto-connecting via Mini App SDK, just show a spinner
+          <div style={{ color:'#fff', fontSize:16, fontWeight:700 }}>⏳ Connecting wallet...</div>
+        ) : (
+          <>
+            <button onClick={() => connect({ connector: baseAccount({ appName:'Chip Chain' }) })}
+              style={{ background:'#0052ff', color:'#fff', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', marginBottom:12, boxShadow:'5px 5px 0 #003dbf', width:'100%', maxWidth:320 }}>
+              {isInWalletBrowser ? 'Connect Wallet' : 'Connect Base Wallet'}
+            </button>
+            {!isInWalletBrowser && (
+              <button onClick={() => connect({ connector: metaMask() })}
+                style={{ background:'#fff', color:'#111', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', boxShadow:'5px 5px 0 #111', width:'100%', maxWidth:320 }}>
+                🦊 Connect MetaMask
+              </button>
+            )}
+          </>
         )}
         <p style={{ color:'rgba(255,255,255,.6)', fontSize:12, marginTop:12 }}>Base Mainnet · Real ETH required for fees</p>
       </div>
