@@ -73,42 +73,43 @@ export default function Home() {
 
     // Detect Base App / Coinbase Wallet in-app browser
     const inBaseApp = Boolean(eth?.isCoinbaseWallet) || /CoinbaseWallet|Base\/\d/i.test(ua)
-
-    // Detect Farcaster Mini App context — the SDK sets window.parent
-    // to something other than window when running inside a Farcaster client,
-    // and exposes a global __farcasterContext or similar marker.
-    const inFarcaster = Boolean(
-      (window as any).__farcasterFrameContext ||
-      (window as any).farcaster ||
-      window !== window.parent
-    )
-
     setIsInWalletBrowser(inBaseApp)
-    setIsInFarcaster(inFarcaster)
 
-    if (isConnected || autoConnectAttempted) return
-    setAutoConnectAttempted(true)
+    // Detect Farcaster using the SDK itself — the most reliable method.
+    // sdk.context resolves with a non-null context object when running
+    // inside a Farcaster client (Warpcast, Base App Farcaster feed etc.)
+    // and times out / returns null when running in a regular browser.
+    import('@farcaster/miniapp-sdk').then(({ sdk }) => {
+      // Race the context fetch against a 1s timeout — avoids hanging
+      // the connect screen indefinitely in non-Farcaster environments
+      const timeout = new Promise<null>(resolve => setTimeout(() => resolve(null), 1000))
+      Promise.race([sdk.context, timeout]).then(ctx => {
+        const inFarcaster = Boolean(ctx)
+        setIsInFarcaster(inFarcaster)
 
-    if (inFarcaster) {
-      // Inside Farcaster — use the Mini App connector which auto-connects
-      // to the user's Farcaster wallet with no popup needed.
-      // Small delay lets the SDK initialise before we attempt connection.
-      setTimeout(() => {
-        import('@farcaster/miniapp-sdk').then(({ sdk }) => {
+        if (isConnected || autoConnectAttempted) return
+        setAutoConnectAttempted(true)
+
+        if (inFarcaster) {
+          // Signal to the Farcaster client that the app is ready,
+          // then connect using the Mini App connector.
           sdk.actions.ready().catch(() => {})
-        })
-        connect({ connector: { id: 'farcasterMiniApp' } as any })
-      }, 100)
-    } else if (inBaseApp) {
-      // Inside Base App — non-prompting check for already-authorized account
-      eth?.request?.({ method: 'eth_accounts' })
-        .then((accounts: string[]) => {
-          if (accounts && accounts.length > 0) {
-            connect({ connector: baseAccount({ appName: 'Chip Chain' }) })
-          }
-        })
-        .catch(() => {})
-    }
+          connect({ connector: { id: 'farcasterMiniApp' } as any })
+        } else if (inBaseApp) {
+          // Non-prompting check for already-authorized Base App account
+          eth?.request?.({ method: 'eth_accounts' })
+            .then((accounts: string[]) => {
+              if (accounts && accounts.length > 0) {
+                connect({ connector: baseAccount({ appName: 'Chip Chain' }) })
+              }
+            })
+            .catch(() => {})
+        }
+      })
+    }).catch(() => {
+      // SDK failed to load — fall through to normal connect buttons
+      setIsInFarcaster(false)
+    })
   }, [isConnected, autoConnectAttempted, connect])
 
   // Small flat buffer on top of the fee itself to cover gas (Base gas is tiny,
