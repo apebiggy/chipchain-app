@@ -104,8 +104,10 @@ export function Leaderboard({ currentAddress }: Props) {
           />
         ))}
 
-        {/* Pinned "you" row if outside top 50 */}
-        {you && <LeaderRow key={`you-${you.wallet_address}`} entry={you} isYou isPinned />}
+        {/* Pinned "you" row only if outside top 50 */}
+        {you && !top50.some(e => e.wallet_address.toLowerCase() === currentAddress?.toLowerCase()) && (
+          <LeaderRow key={`you-${you.wallet_address}`} entry={you} isYou isPinned />
+        )}
       </div>
 
       <div style={S.footer}>
