@@ -46,13 +46,15 @@ export async function GET(req: Request) {
     const currentWallet = searchParams.get('wallet')?.toLowerCase()
 
     // ── 1. Get wallet list from Supabase ─────────────────────────
-    const { data: players, error } = await supabaseAdmin
+    type PlayerRow = { wallet_address: string; basename: string | null; auto_serve_active: boolean }
+
+    const { data: playersRaw, error } = await supabaseAdmin
       .from('players')
       .select('wallet_address, basename, auto_serve_active')
       .order('created_at', { ascending: true })
-      .returns<{ wallet_address: string; basename: string | null; auto_serve_active: boolean }[]>()
 
     if (error) throw new Error(`Supabase error: ${error.message}`)
+    const players = (playersRaw ?? []) as PlayerRow[]
     if (!players || players.length === 0) {
       return NextResponse.json({ top50: [], you: null })
     }
