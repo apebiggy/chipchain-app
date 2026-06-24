@@ -24,8 +24,8 @@ export async function GET() {
   try {
     const currentBlock = await client.getBlockNumber()
 
-    let events = []
-    let error = null
+    let events: any[] = []
+    let error: string | null = null
     try {
       events = await client.getLogs({
         address: GAME_CONTRACT,
