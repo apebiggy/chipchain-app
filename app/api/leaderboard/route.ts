@@ -28,9 +28,9 @@ const GET_PLAYER_DATA = parseAbiItem(
   'function getPlayerData(address player) view returns (bool hasAutoServe, uint256 profileChip, uint256 served, uint256 totalEarned, bool hasMultiplier)'
 )
 
-// ChippyChain mainnet deploy block (~2026-06-20)
-// Only read events from here — zero testnet contamination possible
-const DEPLOY_BLOCK = BigInt(175000000)
+// ChippyChain mainnet deploy block — confirmed on Basescan:
+// https://basescan.org/block/47336423
+const DEPLOY_BLOCK = BigInt(47336423)
 
 export async function GET(req: Request) {
   try {
@@ -43,6 +43,8 @@ export async function GET(req: Request) {
       client.getLogs({ address: GAME_CONTRACT, event: PROFILE_WITHDRAWN_EVENT, fromBlock: DEPLOY_BLOCK, toBlock: 'latest' }),
       client.getLogs({ address: GAME_CONTRACT, event: PROFILE_CREDITED_EVENT,  fromBlock: DEPLOY_BLOCK, toBlock: 'latest' }),
     ])
+
+    console.log(`Onchain leaderboard: ${serveEvents.length} serves, ${withdrawEvents.length} withdrawals, ${creditEvents.length} credits`)
 
     // Aggregate per player
     const playerMap = new Map<string, { servedCount: number; onchainChip: bigint }>()
