@@ -30,6 +30,8 @@ export const metadata: Metadata = {
   other: {
     // Google Search Console domain verification
     'google-site-verification': 'YCgzKxH_MigVA7rAx5ieqPK26Cl_oaL2FHlOkHixUmY',
+    // Talent Protocol project verification
+    'talentapp:project_verification': '671d57845379845df9096358d1eea5dcbe00ebdc9c7a4df6e47f2d4b96c3b5104fa916d52035c57f26be05f5adc4a8b94bb55832b78840100741b83056895e1a',
     // Mini App embed metadata — current standard (fc:miniapp replaces
     // the older fc:frame tags). Makes this page shareable as a rich,
     // interactive card in Base App / Farcaster feeds.
