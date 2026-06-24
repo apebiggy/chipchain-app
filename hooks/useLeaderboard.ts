@@ -2,17 +2,16 @@
 import { useEffect, useState, useCallback } from 'react'
 
 export interface LeaderEntry {
-  wallet_address: string
-  basename:       string | null
-  profile_chip:   number
-  total_served:   number
-  auto_serve_active: boolean
-  onchain_chip:   number
-  base_chip:      number
-  total_chip:     number
+  wallet_address:      string
+  basename:            string | null
+  chip_balance:        number
+  profile_chip:        number
+  total_chip:          number
+  wrap_count:          number
+  total_served:        number
+  auto_serve_active:   boolean
   collection_complete: boolean
-  types_collected:     number
-  rank:           number
+  rank:                number
 }
 
 export function formatAddress(addr: string): string {
@@ -24,10 +23,11 @@ export function formatName(entry: { basename: string | null; wallet_address: str
 }
 
 export function useLeaderboard(currentAddress: string | undefined, interval = 30000) {
-  const [top50,     setTop50]     = useState<LeaderEntry[]>([])
-  const [you,       setYou]       = useState<LeaderEntry | null>(null)
-  const [loading,   setLoading]   = useState(true)
+  const [top50,      setTop50]      = useState<LeaderEntry[]>([])
+  const [you,        setYou]        = useState<LeaderEntry | null>(null)
+  const [loading,    setLoading]    = useState(true)
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null)
+  const [error,      setError]      = useState<string | null>(null)
 
   const fetch_ = useCallback(async () => {
     try {
@@ -36,11 +36,13 @@ export function useLeaderboard(currentAddress: string | undefined, interval = 30
         : '/api/leaderboard'
       const res  = await fetch(url)
       const data = await res.json()
+      if (data.error) setError(data.error)
       setTop50(data.top50 || [])
       setYou(data.you || null)
       setLastUpdate(new Date())
-    } catch (err) {
+    } catch (err: any) {
       console.error('Leaderboard fetch failed:', err)
+      setError(err.message)
     } finally {
       setLoading(false)
     }
@@ -52,5 +54,5 @@ export function useLeaderboard(currentAddress: string | undefined, interval = 30
     return () => clearInterval(t)
   }, [fetch_, interval])
 
-  return { top50, you, loading, lastUpdate, refetch: fetch_ }
+  return { top50, you, loading, lastUpdate, error, refetch: fetch_ }
 }

@@ -49,7 +49,7 @@ function LeaderRow({ entry, isYou, isPinned = false }: { entry: LeaderEntry; isY
           </span>
         )}
       </span>
-      <span style={S.served}>{entry.total_served.toLocaleString()}</span>
+      <span style={S.wraps}>{entry.wrap_count ?? 0} 📰</span>
       <span style={S.chip}>
         {entry.total_chip.toLocaleString()}
       </span>
@@ -91,7 +91,7 @@ export function Leaderboard({ currentAddress }: Props) {
       <div style={S.colHeaders}>
         <span style={{ width: 28 }}>#</span>
         <span style={{ flex: 1 }}>Player</span>
-        <span style={{ width: 52, textAlign: 'right' }}>Served</span>
+        <span style={{ width: 64, textAlign: 'right' }}>Wraps</span>
         <span style={{ width: 72, textAlign: 'right' }}>$CHIP</span>
       </div>
 
@@ -133,7 +133,7 @@ const S: Record<string, React.CSSProperties> = {
   address:    { fontFamily: 'monospace', fontSize: 10.5, color: '#888', whiteSpace: 'nowrap' },
   youBadge:   { marginLeft: 6, background: '#0052ff', color: '#fff', fontSize: 8, fontWeight: 900, padding: '1px 5px', borderRadius: 3 },
   autoBadge:  { marginLeft: 6, fontSize: 11, cursor: 'help' },
-  served:     { width: 52, textAlign: 'right', color: '#888', fontSize: 12, fontWeight: 700, flexShrink: 0 },
+  wraps:      { width: 64, textAlign: 'right' as const, color: '#888', fontSize: 12, fontWeight: 700, flexShrink: 0 },
   chip:       { width: 72, textAlign: 'right', color: '#e67e22', fontWeight: 900, fontSize: 13, flexShrink: 0 },
   empty:      { padding: 32, textAlign: 'center', color: '#aaa', fontWeight: 700, fontSize: 13 },
   footer:     { padding: '8px 12px', fontSize: 10, color: '#bbb', borderTop: '1px solid #f0f0f0', textAlign: 'center' },
