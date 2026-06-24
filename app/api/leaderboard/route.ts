@@ -50,6 +50,7 @@ export async function GET(req: Request) {
       .from('players')
       .select('wallet_address, basename, auto_serve_active')
       .order('created_at', { ascending: true })
+      .returns<{ wallet_address: string; basename: string | null; auto_serve_active: boolean }[]>()
 
     if (error) throw new Error(`Supabase error: ${error.message}`)
     if (!players || players.length === 0) {
