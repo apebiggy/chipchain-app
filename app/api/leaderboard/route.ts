@@ -83,11 +83,11 @@ export async function GET(req: Request) {
 
     // ── 3. Build entries ─────────────────────────────────────────
     const entries = players.map((p, i) => {
-      const chipBal     = chipResults[i]?.status    === 'success' ? Number(chipResults[i].result) / 1e18    : 0
+      const chipBal     = chipResults[i]?.status    === 'success' ? Number(chipResults[i].result)    : 0
       const wrapCount   = wrapResults[i]?.status    === 'success' ? Number(wrapResults[i].result)    : 0
       const profileData = profileResults[i]?.status === 'success' ? profileResults[i].result         : null
 
-      const profileChip   = profileData ? Number(profileData[1]) / 1e18 : 0
+      const profileChip   = profileData ? Number(profileData[1]) : 0
       const hasAutoServe  = profileData ? Boolean(profileData[0]) : false
       const hasMultiplier = profileData ? Boolean(profileData[4]) : false
       const totalServed   = profileData ? Number(profileData[2])  : 0
