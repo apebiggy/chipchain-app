@@ -26,6 +26,15 @@ const BALANCE_OF = [{
   outputs: [{ name: '', type: 'uint256' }],
 }] as const
 
+// $CHIP uses pointsBalance (non-transferable points system), not balanceOf
+const POINTS_BALANCE = [{
+  name: 'pointsBalance',
+  type: 'function',
+  stateMutability: 'view',
+  inputs:  [{ name: 'account', type: 'address' }],
+  outputs: [{ name: '', type: 'uint256' }],
+}] as const
+
 const GET_PLAYER_DATA = [{
   name: 'getPlayerData',
   type: 'function',
@@ -62,7 +71,7 @@ export async function GET(req: Request) {
     const addresses = players.map(p => p.wallet_address as `0x${string}`)
 
     // ── 2. Multicall — chip balance, wrap count, profile data ────
-    const chipCalls    = addresses.map(addr => ({ address: CHIP_TOKEN,    abi: BALANCE_OF,      functionName: 'balanceOf',     args: [addr] }))
+    const chipCalls    = addresses.map(addr => ({ address: CHIP_TOKEN,    abi: POINTS_BALANCE,  functionName: 'pointsBalance', args: [addr] }))
     const wrapCalls    = addresses.map(addr => ({ address: WRAP_NFT,      abi: BALANCE_OF,      functionName: 'balanceOf',     args: [addr] }))
     const profileCalls = addresses.map(addr => ({ address: GAME_CONTRACT, abi: GET_PLAYER_DATA, functionName: 'getPlayerData', args: [addr] }))
 
@@ -101,7 +110,7 @@ export async function GET(req: Request) {
 
     // ── 4. Sort + rank ───────────────────────────────────────────
     const sorted = entries
-      .filter(e => e.total_chip > 0 || e.wrap_count > 0 || e.total_served > 0)
+      .filter(e => e.total_chip > 0 || e.wrap_count > 0)
       .sort((a, b) => b.total_chip - a.total_chip)
 
     let rank = 1
