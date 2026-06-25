@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
 
 // ─────────────────────────────────────────────────────────────
 // CHIP CHAIN — Landing Page ("/welcome")
@@ -79,7 +80,48 @@ const FAQ_TEASER = [
 ]
 
 export default function WelcomePage() {
+  const [showSplash, setShowSplash] = useState(true)
+  const [fadeOut, setFadeOut]       = useState(false)
+
+  useEffect(() => {
+    const fadeTimer   = setTimeout(() => setFadeOut(true),   1800)
+    const removeTimer = setTimeout(() => setShowSplash(false), 2300)
+    return () => { clearTimeout(fadeTimer); clearTimeout(removeTimer) }
+  }, [])
+
   return (
+    <>
+      {showSplash && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 9999, background: '#1a90d8',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          opacity: fadeOut ? 0 : 1, transition: 'opacity 0.5s ease',
+          pointerEvents: fadeOut ? 'none' : 'all',
+        }}>
+          <style>{`
+            @keyframes chipPulse {
+              0%   { transform: scale(1);    }
+              50%  { transform: scale(1.18); }
+              100% { transform: scale(1);    }
+            }
+            @keyframes chipFadeIn {
+              from { opacity: 0; transform: scale(0.7); }
+              to   { opacity: 1; transform: scale(1);   }
+            }
+          `}</style>
+          <div style={{ animation: 'chipFadeIn 0.4s ease forwards, chipPulse 0.9s ease-in-out 0.4s infinite', marginBottom: 24 }}>
+            <img src="/branding/logo-full.png" alt="Chip Chain"
+              style={{ width: 160, height: 160, objectFit: 'contain', filter: 'drop-shadow(0 6px 18px rgba(0,0,0,0.35))' }} />
+          </div>
+          <div style={{ fontFamily: 'Bangers, serif', fontSize: 48, color: '#FFD700', letterSpacing: 4, textShadow: '3px 3px 0 #111', lineHeight: 1, marginBottom: 8 }}>
+            CHIP CHAIN
+          </div>
+          <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13, fontWeight: 800, letterSpacing: 2 }}>
+            THE GREAT BRITISH FRY-OFF
+          </div>
+        </div>
+      )}
+
     <div style={S.page}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@500;600;700;900&family=Nunito:wght@400;700;800;900&display=swap');
@@ -282,6 +324,7 @@ export default function WelcomePage() {
         </div>
       </div>
     </div>
+    </>
   )
 }
 
