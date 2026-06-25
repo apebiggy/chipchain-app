@@ -96,7 +96,7 @@ export async function GET(req: Request) {
       const totalChip = chipBal + profileChip
 
       return {
-        wallet_address:      p.wallet_address,
+        wallet_address:      p.wallet_address.toLowerCase(),
         basename:            p.basename ?? null,
         chip_balance:        chipBal,
         profile_chip:        profileChip,

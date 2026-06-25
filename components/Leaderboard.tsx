@@ -58,7 +58,8 @@ function LeaderRow({ entry, isYou, isPinned = false }: { entry: LeaderEntry; isY
 }
 
 export function Leaderboard({ currentAddress }: Props) {
-  const { top50, you, loading, lastUpdate } = useLeaderboard(currentAddress, 30000)
+  const normalizedCurrent = currentAddress?.toLowerCase()
+  const { top50, you, loading, lastUpdate } = useLeaderboard(normalizedCurrent, 30000)
 
   if (loading) {
     return (
@@ -100,12 +101,12 @@ export function Leaderboard({ currentAddress }: Props) {
           <LeaderRow
             key={entry.wallet_address}
             entry={entry}
-            isYou={currentAddress?.toLowerCase() === entry.wallet_address.toLowerCase()}
+            isYou={normalizedCurrent === entry.wallet_address.toLowerCase()}
           />
         ))}
 
         {/* Pinned "you" row only if outside top 50 */}
-        {you && !top50.some(e => e.wallet_address.toLowerCase() === currentAddress?.toLowerCase()) && (
+        {you && !top50.some(e => e.wallet_address.toLowerCase() === normalizedCurrent) && (
           <LeaderRow key={`you-${you.wallet_address}`} entry={you} isYou isPinned />
         )}
       </div>
