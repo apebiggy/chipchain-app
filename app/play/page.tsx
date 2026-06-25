@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
-import { baseAccount, metaMask } from 'wagmi/connectors'
+import { baseAccount, metaMask, injected } from 'wagmi/connectors'
 import { usePlayerProfile } from '@/hooks/usePlayerProfile'
 import { useServe } from '@/hooks/useServe'
 import { useAutoServe } from '@/hooks/useAutoServe'
@@ -226,10 +226,18 @@ export default function Home() {
               {isInWalletBrowser ? 'Connect Wallet' : 'Connect Base Wallet'}
             </button>
             {!isInWalletBrowser && (
-              <button onClick={() => connect({ connector: metaMask() })}
-                style={{ background:'#fff', color:'#111', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', boxShadow:'5px 5px 0 #111', width:'100%', maxWidth:320 }}>
-                🦊 Connect MetaMask
-              </button>
+              <>
+                {/* Injected — catches Rainbow, Trust, Brave, Coinbase and any other
+                    EIP-1193 browser wallet that isn't MetaMask specifically */}
+                <button onClick={() => connect({ connector: injected() })}
+                  style={{ background:'#fff', color:'#111', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', marginBottom:12, boxShadow:'5px 5px 0 #111', width:'100%', maxWidth:320 }}>
+                  🌈 Other Wallet
+                </button>
+                <button onClick={() => connect({ connector: metaMask() })}
+                  style={{ background:'#fff', color:'#111', border:'3px solid #111', borderRadius:10, padding:'14px 32px', fontSize:18, fontWeight:900, cursor:'pointer', boxShadow:'5px 5px 0 #111', width:'100%', maxWidth:320 }}>
+                  🦊 Connect MetaMask
+                </button>
+              </>
             )}
           </>
         )}
