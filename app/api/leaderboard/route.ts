@@ -120,9 +120,43 @@ export async function GET(req: Request) {
     })
 
     const top50 = ranked.slice(0, 50)
-    const you   = currentWallet
-      ? ranked.find(e => e.wallet_address.toLowerCase() === currentWallet) ?? null
-      : null
+
+    let you = null
+    if (currentWallet) {
+      // Check if already in ranked list
+      const inRanked = ranked.find(e => e.wallet_address === currentWallet) ?? null
+
+      if (inRanked) {
+        // Only pin below top50 if not already visible there
+        you = top50.some(e => e.wallet_address === currentWallet) ? null : inRanked
+      } else {
+        // Not in Supabase yet — read onchain directly so we can still highlight them
+        try {
+          const addr = currentWallet as `0x${string}`
+          const [chipRes, wrapRes, profileRes] = await Promise.all([
+            client.readContract({ address: CHIP_TOKEN,    abi: POINTS_BALANCE,  functionName: 'pointsBalance', args: [addr] }),
+            client.readContract({ address: WRAP_NFT,      abi: BALANCE_OF,      functionName: 'balanceOf',     args: [addr] }),
+            client.readContract({ address: GAME_CONTRACT, abi: GET_PLAYER_DATA, functionName: 'getPlayerData', args: [addr] }),
+          ])
+          const profileData = profileRes as readonly [boolean, bigint, bigint, bigint, boolean]
+          const chipBal     = Number(chipRes)
+          const profileChip = Number(profileData[1])
+          const wrapCount   = Number(wrapRes)
+          you = {
+            wallet_address:      currentWallet,
+            basename:            null,
+            chip_balance:        chipBal,
+            profile_chip:        profileChip,
+            total_chip:          chipBal + profileChip,
+            wrap_count:          wrapCount,
+            total_served:        Number(profileData[2]),
+            auto_serve_active:   profileData[0],
+            collection_complete: profileData[4],
+            rank:                ranked.length + 1,
+          }
+        } catch { /* wallet has nothing onchain */ }
+      }
+    }
 
     return NextResponse.json({ top50, you })
 
