@@ -70,14 +70,21 @@ export async function GET(req: NextRequest) {
     const MAX_ATTEMPTS = 4
     let hash: `0x${string}` | undefined
     let lastErr: unknown
+    let nonceOverride: number | undefined
 
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-      // Take the higher of 'pending' and 'latest' nonce, in case one RPC node is lagging
-      const [pendingNonce, latestNonce] = await Promise.all([
-        publicClient.getTransactionCount({ address: account.address, blockTag: 'pending' }),
-        publicClient.getTransactionCount({ address: account.address, blockTag: 'latest' }),
-      ])
-      const nonce = Math.max(pendingNonce, latestNonce)
+      let nonce: number
+      if (nonceOverride !== undefined) {
+        // Use the exact nonce the network told us it expects
+        nonce = nonceOverride
+      } else {
+        // Take the higher of 'pending' and 'latest' nonce, in case one RPC node is lagging
+        const [pendingNonce, latestNonce] = await Promise.all([
+          publicClient.getTransactionCount({ address: account.address, blockTag: 'pending' }),
+          publicClient.getTransactionCount({ address: account.address, blockTag: 'latest' }),
+        ])
+        nonce = Math.max(pendingNonce, latestNonce)
+      }
 
       try {
         hash = await walletClient.writeContract({
@@ -92,7 +99,12 @@ export async function GET(req: NextRequest) {
         lastErr = err
         const msg = String(err)
         if (msg.includes('nonce too low') && attempt < MAX_ATTEMPTS) {
-          console.warn(`Cron attempt ${attempt} hit nonce-too-low (tried nonce ${nonce}), retrying...`)
+          // The error itself contains the authoritative nonce, e.g.
+          // "nonce too low: next nonce 2266, tx nonce 2265" — use it
+          // directly instead of re-asking a lagging RPC node.
+          const m = msg.match(/next nonce (\d+)/)
+          nonceOverride = m ? parseInt(m[1], 10) : nonce + 1
+          console.warn(`Cron attempt ${attempt} hit nonce-too-low (tried ${nonce}), retrying with ${nonceOverride}...`)
           await new Promise((r) => setTimeout(r, 1500 * attempt))
           continue
         }
