@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { createWalletClient, createPublicClient, http } from 'viem'
+import { createWalletClient, createPublicClient, http, fallback } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { baseSepolia, base } from 'viem/chains'
 import { CONTRACTS } from '@/lib/contracts'
@@ -13,6 +13,12 @@ const ACTIVE_CHAIN = isProd ? base : baseSepolia
 const RPC_URL = isProd
   ? (process.env.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org')
   : (process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || 'https://sepolia.base.org')
+
+// Fallback: if the CDP node fails (DNS hiccups, rate limits, outages),
+// automatically retry against the public endpoint instead of failing the tick.
+const TRANSPORT = isProd
+  ? fallback([http(RPC_URL, { timeout: 30_000 }), http('https://mainnet.base.org', { timeout: 30_000 })])
+  : http(RPC_URL)
 
 const CHIPS_PER_TICK = 100  // 100 CHIP per 10-minute tick = same 14,400/day effective rate
 
@@ -54,12 +60,12 @@ export async function GET(req: NextRequest) {
     const walletClient = createWalletClient({
       account,
       chain: ACTIVE_CHAIN,
-      transport: http(RPC_URL),
+      transport: TRANSPORT,
     })
 
     const publicClient = createPublicClient({
       chain: ACTIVE_CHAIN,
-      transport: http(RPC_URL),
+      transport: TRANSPORT,
     })
 
     // Batch credit all active players at once
